@@ -10,6 +10,8 @@
 		B5DC02862E27802700B34941 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = B5DC02852E27802700B34941 /* SnapKit */; };
 		B5DC02892E27803300B34941 /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = B5DC02882E27803300B34941 /* Then */; };
 		B5DC028C2E27803F00B34941 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B5DC028B2E27803F00B34941 /* Kingfisher */; };
+		E9FA8FC62E27851A007AC519 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = E9FA8FC52E27851A007AC519 /* Realm */; };
+		E9FA8FC82E27851B007AC519 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E9FA8FC72E27851A007AC519 /* RealmSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +46,8 @@
 			files = (
 				B5DC028C2E27803F00B34941 /* Kingfisher in Frameworks */,
 				B5DC02862E27802700B34941 /* SnapKit in Frameworks */,
+				E9FA8FC62E27851A007AC519 /* Realm in Frameworks */,
+				E9FA8FC82E27851B007AC519 /* RealmSwift in Frameworks */,
 				B5DC02892E27803300B34941 /* Then in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -90,6 +94,8 @@
 				B5DC02852E27802700B34941 /* SnapKit */,
 				B5DC02882E27803300B34941 /* Then */,
 				B5DC028B2E27803F00B34941 /* Kingfisher */,
+				E9FA8FC52E27851A007AC519 /* Realm */,
+				E9FA8FC72E27851A007AC519 /* RealmSwift */,
 			);
 			productName = NBCinema;
 			productReference = B5DC02462E277FAC00B34941 /* NBCinema.app */;
@@ -123,6 +129,7 @@
 				B5DC02842E27802700B34941 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				B5DC02872E27803300B34941 /* XCRemoteSwiftPackageReference "Then" */,
 				B5DC028A2E27803F00B34941 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				E9FA8FC42E27851A007AC519 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B5DC02472E277FAC00B34941 /* Products */;
@@ -388,6 +395,14 @@
 				minimumVersion = 8.5.0;
 			};
 		};
+		E9FA8FC42E27851A007AC519 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 10.33.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -405,6 +420,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B5DC028A2E27803F00B34941 /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		E9FA8FC52E27851A007AC519 /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E9FA8FC42E27851A007AC519 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		E9FA8FC72E27851A007AC519 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E9FA8FC42E27851A007AC519 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
