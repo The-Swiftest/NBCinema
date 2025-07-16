@@ -13,7 +13,7 @@ protocol MainTabCoordinatorDelegate: AnyObject {
 
 /// TabBar와 각 탭의 Coordinator들을 관리하는 Coordinator
 class MainTabCoordinator: BaseCoordinator {
-    private var tabBarController: UITabBarController?
+    private var tabBarController: CustomTabBarController?
     weak var delegate: MainTabCoordinatorDelegate?
     
     override func start() {
@@ -21,8 +21,8 @@ class MainTabCoordinator: BaseCoordinator {
     }
     
     private func setUPTabBar() {
-        let tabBarController = UITabBarController()
-        
+        let tabBarController = CustomTabBarController()
+
         // 영화목록 탭
         let movieListNav = UINavigationController()
         let movieListCoordinator = MovieListCoordinator(navigationController: movieListNav)
@@ -47,7 +47,7 @@ class MainTabCoordinator: BaseCoordinator {
         
         tabBarController.viewControllers = [movieListNav, searchNav, myPageNav]
         
-        self.tabBarController = tabBarController
+		self.tabBarController = tabBarController
         navigationController.setViewControllers([tabBarController], animated: true)
     }
 }
