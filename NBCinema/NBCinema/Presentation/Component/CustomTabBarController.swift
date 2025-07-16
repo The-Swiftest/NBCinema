@@ -19,5 +19,8 @@ class CustomTabBarController: UITabBarController {
 		tabBar.tintColor = .nbcMain
 		tabBar.unselectedItemTintColor = .tabBarItem
 		tabBar.backgroundColor = .systemBackground
+
+		let fontAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12, weight: .bold)]
+		UITabBarItem.appearance().setTitleTextAttributes(fontAttributes, for: .normal)
 	}
 }

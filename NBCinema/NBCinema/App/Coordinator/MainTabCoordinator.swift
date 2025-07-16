@@ -28,23 +28,35 @@ class MainTabCoordinator: BaseCoordinator {
         let movieListCoordinator = MovieListCoordinator(navigationController: movieListNav)
         addChildCoordinator(movieListCoordinator)
         movieListCoordinator.start()
-        movieListNav.tabBarItem = UITabBarItem(title: "영화목록", image: UIImage(systemName: "film"), tag: 0)
-        
+        movieListNav.tabBarItem = UITabBarItem(
+			title: "영화 목록",
+			image: UIImage(named: "movie"),
+			tag: 0
+		)
+
         // 검색 탭
         let searchNav = UINavigationController()
         let searchCoordinator = SearchCoordinator(navigationController: searchNav)
         addChildCoordinator(searchCoordinator)
         searchCoordinator.start()
-        searchNav.tabBarItem = UITabBarItem(title: "검색", image: UIImage(systemName: "magnifyingglass"), tag: 1)
-        
+        searchNav.tabBarItem = UITabBarItem(
+			title: "영화 검색",
+			image: UIImage(named: "search"),
+			tag: 1
+		)
+
         // 마이페이지 탭
         let myPageNav = UINavigationController()
         let myPageCoordinator = MyPageCoordinator(navigationController: myPageNav)
-        myPageCoordinator.delegate = self 
+        myPageCoordinator.delegate = self
         addChildCoordinator(myPageCoordinator)
         myPageCoordinator.start()
-        myPageNav.tabBarItem = UITabBarItem(title: "마이페이지", image: UIImage(systemName: "person"), tag: 2)
-        
+        myPageNav.tabBarItem = UITabBarItem(
+			title: "마이페이지",
+			image:  UIImage(named: "person"),
+			tag: 2
+		)
+
         tabBarController.viewControllers = [movieListNav, searchNav, myPageNav]
         
 		self.tabBarController = tabBarController
