@@ -8,11 +8,12 @@
 import Foundation
 
 enum TMDBEndPoint {
-    case popular // 상영중인 인기 순위
+    case nowPlaying // 상영중, 인기 순
+    case popular
     case upcoming
-    case nowPlaying
     case topRated
     case movieDetail(Int)
+    case movieCredits(id: Int)
     case search(query: String)
     case genres
     
@@ -29,16 +30,18 @@ enum TMDBEndPoint {
     
     private var path: String {
         switch self {
+        case .nowPlaying:
+            return "movie/now_playing"
         case .popular:
             return "movie/popular"
         case .upcoming:
             return "movie/upcoming"
-        case .nowPlaying:
-            return "movie/now_playing"
         case .topRated:
             return "movie/top_rated"
         case .movieDetail(let id):
             return "/movie/\(id)"
+        case .movieCredits(let id):
+            return "/movie/\(id)/credits"
         case .search(query: let query):
             return "/search/movie"
         case .genres:
@@ -53,8 +56,6 @@ enum TMDBEndPoint {
         case .search(let query):
             let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
             return baseParams + "&query=\(encodedQuery)"
-        case .movieDetail:
-            return baseParams + "&append_to_response=credits"
         default:
             return baseParams
         }

@@ -8,6 +8,7 @@
 import Foundation
 
 final class NetworkClient {
+    
     static let shared = NetworkClient()
     private init() {}
     
