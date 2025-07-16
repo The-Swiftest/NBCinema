@@ -133,7 +133,6 @@ iOSInjectionProject/
 /*.gcno
 
 ### Xcode Patch ###
-*.xcodeproj/*
 !*.xcodeproj/project.pbxproj
 !*.xcodeproj/xcshareddata/
 !*.xcworkspace/contents.xcworkspacedata
@@ -143,6 +142,5 @@ iOSInjectionProject/
 ### SwiftPackageManager ###
 Packages
 xcuserdata
-*.xcodeproj
 
 # End of https://www.toptal.com/developers/gitignore/api/swift,xcode,macos,cocoapods
