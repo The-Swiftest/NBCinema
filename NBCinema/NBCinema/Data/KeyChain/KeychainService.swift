@@ -10,6 +10,9 @@ import Security
 
 class KeychainService {
 
+	// MARK: - Save
+	// 성공시 true, 실패시 false 반환
+	// 결과값 사용하지 않아도 경고 안뜸
 	@discardableResult
 	static func save(service: String, account: String, value: String) -> Bool {
 		guard let valueData = value.data(using: .utf8) else { return false }
@@ -28,6 +31,8 @@ class KeychainService {
 		return status == errSecSuccess
 	}
 
+	// MARK: - Load
+	// 저장 되어있는 value값이 문자열로 반환됩니다.
 	static func load(service: String, account: String) -> String? {
 		let query: [CFString : Any] = [
 			kSecClass : kSecClassGenericPassword,
@@ -48,6 +53,9 @@ class KeychainService {
 		return result
 	}
 
+	// MARK: - Delete
+	// 성공시 true, 실패시 false 반환
+	// 결과값 사용하지 않아도 경고 안뜸
 	@discardableResult
 	static func delete(service: String, account: String) -> Bool {
 		let query: [CFString : Any] = [
