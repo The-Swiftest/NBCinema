@@ -15,7 +15,9 @@ import Then
 class HeaderView: UIView {
 
 	let backButton = UIButton().then {
-		$0.setImage(UIImage(systemName: "arrow.left"), for: .normal)
+		let configuration = UIImage.SymbolConfiguration(pointSize: 32, weight: .bold)
+		let image = UIImage(systemName: "arrow.left", withConfiguration: configuration)
+		$0.setImage(image, for: .normal)
 		$0.tintColor = .reverseSystem
 	}
 
