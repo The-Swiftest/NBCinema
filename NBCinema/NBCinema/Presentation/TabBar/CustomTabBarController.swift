@@ -16,8 +16,8 @@ class CustomTabBarController: UITabBarController {
 	}
 
 	private func customizeTabBarAppearance() {
-		tabBar.tintColor = .systemRed
-		tabBar.unselectedItemTintColor = .gray
-		tabBar.backgroundColor = .white
+		tabBar.tintColor = .nbcMain
+		tabBar.unselectedItemTintColor = .tabBarItem
+		tabBar.backgroundColor = .systemBackground
 	}
 }
