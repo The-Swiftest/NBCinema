@@ -19,6 +19,7 @@ class UserActivityService {
 			}
 		} catch {
 			print("Error new, save realm \(error)")
+			throw error
 		}
 	}
 
