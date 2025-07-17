@@ -51,21 +51,21 @@ class HeaderView: UIView {
 		case .logo:
 			self.addSubview(logoImageView)
 
-			logoImageView.snp.makeConstraints { make in
-				make.center.height.equalToSuperview()
+			logoImageView.snp.makeConstraints {
+				$0.center.height.equalToSuperview()
 			}
 		case .sub(let title):
 			headLabel.text = title
 			self.addSubview(backButton)
 			self.addSubview(headLabel)
 
-			backButton.snp.makeConstraints { make in
-				make.top.bottom.leading.equalToSuperview().inset(15)
+			backButton.snp.makeConstraints {
+				$0.top.bottom.leading.equalToSuperview().inset(15)
 			}
 
-			headLabel.snp.makeConstraints { make in
-				make.top.bottom.equalToSuperview().inset(21)
-				make.centerX.equalToSuperview()
+			headLabel.snp.makeConstraints {
+				$0.top.bottom.equalToSuperview().inset(21)
+				$0.centerX.equalToSuperview()
 			}
 		}
 	}
