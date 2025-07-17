@@ -28,9 +28,39 @@ class MovieListCoordinator: BaseCoordinator {
         movieListVC.title = "영화목록"
         
         // MockRepository 전체 테스트
-//        Task {
-//            await testAllMockRepositoryMethods()
-//        }
+        //        Task {
+        //            await testAllMockRepositoryMethods()
+        //        }
+        
+        // 🧪 실제 API 테스트 코드
+        Task {
+            do {
+                print("🌐 TMDB API 호출 시작...")
+                
+                // 인기 영화 테스트
+                let popularMovies = try await movieRepository.fetchPopularMovies()
+                print("✅ 인기 영화 \(popularMovies.count)개 로드 성공")
+                print("🎬 첫 번째 영화: \(popularMovies.first?.title ?? "없음")")
+                
+                // 장르 목록 테스트
+                let genres = try await movieRepository.fetchGenres()
+                print("✅ 장르 \(genres.count)개 로드 성공")
+                print("🎭 첫 번째 장르: \(genres.first?.name ?? "없음")")
+                
+                // 영화 상세 정보 테스트 (인기 영화 첫 번째)
+                if let firstMovie = popularMovies.first {
+                    let movieDetail = try await movieRepository.fetchMovieDetail(id: firstMovie.id)
+                    print("✅ 영화 상세 정보 로드 성공: \(movieDetail.title)")
+                    print("📝 줄거리: \(String(movieDetail.overview.prefix(50)))...")
+                }
+                
+            } catch {
+                print("❌ API 호출 실패: \(error)")
+                if let networkError = error as? NetworkError {
+                    print("❌ 상세 에러: \(networkError.localizedDescription)")
+                }
+            }
+        }
         
         navigationController.setViewControllers([movieListVC], animated: false)
     }

@@ -14,7 +14,7 @@ final class NetworkClient {
     
     /// GET 요청
     func request<T: Decodable>(url: URL) async throws(NetworkError) -> T {
-        
+
         // URLRequest 생성
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -41,6 +41,11 @@ final class NetworkClient {
             // JSON Decoding
             let decoder = JSONDecoder()
             let result = try decoder.decode(T.self, from: data)
+            // 성공 로그
+            #if DEBUG
+            print("✅ API 호출 성공: \(url)")
+            print("📊 응답 데이터 크기: \(data.count) bytes")
+            #endif
             return result
         }
         

@@ -24,7 +24,7 @@ class MainTabCoordinator: BaseCoordinator {
         let tabBarController = CustomTabBarController()
         
         // TODO: 추후 MovieRepository로 교체
-        let movieRepository: MovieRepository = MockMovieRepository()
+        let movieRepository: MovieRepository = NetworkMovieRepository()
         
         // 영화목록 탭
         let movieListNav = UINavigationController()
