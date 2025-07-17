@@ -24,6 +24,7 @@ extension Int {
         }
     }
 
+    /// 숫자를 쉼표를 가진 문자열로 변환 ex)  2,000
     func toCommaString() -> String {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
