@@ -14,7 +14,9 @@ final class NetworkClient {
     
     /// GET 요청
     func request<T: Decodable>(url: URL) async throws(NetworkError) -> T {
-        
+        #if DEBUG
+        print("🔑 API 키: \(Config.tmdbAPIKey.isEmpty ? "❌넣어주세요❌ " : "✅")")
+        #endif
         // URLRequest 생성
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -43,13 +45,16 @@ final class NetworkClient {
             let result = try decoder.decode(T.self, from: data)
             return result
         }
+        catch _ as DecodingError {
+            throw NetworkError.decodingError
+        }
         
-        catch let decodingError as DecodingError {
-            throw NetworkError.decodingError  // 디코딩 에러
-        } catch let networkError as NetworkError {
-            throw networkError  // 이미 NetworkError인 경우 그대로 던지기
-        } catch {
-            throw NetworkError.networkError(error.localizedDescription)  // 기타 에러
+        catch let urlError as URLError {
+            throw NetworkError.networkError(urlError.localizedDescription)
+        }
+        
+        catch {
+            throw NetworkError.unknown
         }
     }
 }

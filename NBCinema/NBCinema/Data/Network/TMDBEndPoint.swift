@@ -15,6 +15,7 @@ enum TMDBEndPoint {
     case movieDetail(Int)
     case movieCredits(id: Int)
     case search(query: String)
+    case moviesByGenre(genreId: Int)
     case genres
     
     var url: URL {
@@ -31,19 +32,21 @@ enum TMDBEndPoint {
     private var path: String {
         switch self {
         case .nowPlaying:
-            return "movie/now_playing"
+            return "/movie/now_playing"
         case .popular:
-            return "movie/popular"
+            return "/movie/popular"
         case .upcoming:
-            return "movie/upcoming"
+            return "/movie/upcoming"
         case .topRated:
-            return "movie/top_rated"
+            return "/movie/top_rated"
         case .movieDetail(let id):
             return "/movie/\(id)"
         case .movieCredits(let id):
             return "/movie/\(id)/credits"
-        case .search(query: let query):
+        case .search(query: _):
             return "/search/movie"
+        case .moviesByGenre(genreId: _):
+            return "/discover/movie"
         case .genres:
             return "/genre/movie/list"
         }
@@ -56,6 +59,8 @@ enum TMDBEndPoint {
         case .search(let query):
             let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
             return baseParams + "&query=\(encodedQuery)"
+        case .moviesByGenre(let genreId):  
+            return baseParams + "&with_genres=\(genreId)"
         default:
             return baseParams
         }

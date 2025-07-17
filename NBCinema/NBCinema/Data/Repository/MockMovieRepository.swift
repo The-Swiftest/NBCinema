@@ -32,6 +32,11 @@ final class MockMovieRepository: MovieRepository {
         // 없으면 첫 번째 영화 반환 (테스트용)
         return MockData.movieDetails[0]
     }
+    
+    func fetchMovieCredits(id: Int) async throws -> (director: String?, cast: [String]) {
+        let credits = MockData.movieCredits[id] ?? MockData.defaultCredits
+        return credits
+    }
 
     func searchMovies(query: String) async throws -> [Movie] {
         guard !query.isEmpty else {
@@ -52,10 +57,5 @@ final class MockMovieRepository: MovieRepository {
     func fetchMoviesByGenre(genreId: Int) async throws -> [Movie] {
         let filteredMovies = MockData.getMoviesByGenre(genreId: genreId)
         return filteredMovies
-    }
-
-    func fetchMovieCredits(id: Int) async throws -> (director: String?, cast: [String]) {
-        let credits = MockData.movieCredits[id] ?? MockData.defaultCredits
-        return credits
     }
 }
