@@ -41,20 +41,18 @@ final class NetworkClient {
             // JSON Decoding
             let decoder = JSONDecoder()
             let result = try decoder.decode(T.self, from: data)
-            // 성공 로그
-            #if DEBUG
-            print("✅ API 호출 성공: \(url)")
-            print("📊 응답 데이터 크기: \(data.count) bytes")
-            #endif
             return result
         }
+        catch _ as DecodingError {
+            throw NetworkError.decodingError
+        }
         
-        catch let decodingError as DecodingError {
-            throw NetworkError.decodingError  // 디코딩 에러
-        } catch let networkError as NetworkError {
-            throw networkError  // 이미 NetworkError인 경우 그대로 던지기
-        } catch {
-            throw NetworkError.networkError(error.localizedDescription)  // 기타 에러
+        catch let urlError as URLError {
+            throw NetworkError.networkError(urlError.localizedDescription)
+        }
+        
+        catch {
+            throw NetworkError.unknown
         }
     }
 }
