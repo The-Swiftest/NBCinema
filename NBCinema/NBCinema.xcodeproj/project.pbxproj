@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B5D370E32E27BBA800F88D6E /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = B5D370E22E27BBA800F88D6E /* Config.xcconfig */; };
 		B5DC02862E27802700B34941 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = B5DC02852E27802700B34941 /* SnapKit */; };
 		B5DC02892E27803300B34941 /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = B5DC02882E27803300B34941 /* Then */; };
 		B5DC028C2E27803F00B34941 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B5DC028B2E27803F00B34941 /* Kingfisher */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B5D370E22E27BBA800F88D6E /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		B5DC02462E277FAC00B34941 /* NBCinema.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NBCinema.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -58,6 +60,7 @@
 		B5DC023D2E277FAC00B34941 = {
 			isa = PBXGroup;
 			children = (
+				B5D370E22E27BBA800F88D6E /* Config.xcconfig */,
 				B5DC02482E277FAC00B34941 /* NBCinema */,
 				B5DC02472E277FAC00B34941 /* Products */,
 			);
@@ -146,6 +149,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5D370E32E27BBA800F88D6E /* Config.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,6 +168,7 @@
 /* Begin XCBuildConfiguration section */
 		B5DC025A2E277FAD00B34941 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B5D370E22E27BBA800F88D6E /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
