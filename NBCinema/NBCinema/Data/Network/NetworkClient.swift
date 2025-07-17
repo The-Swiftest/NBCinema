@@ -14,7 +14,9 @@ final class NetworkClient {
     
     /// GET 요청
     func request<T: Decodable>(url: URL) async throws(NetworkError) -> T {
-
+        #if DEBUG
+        print("🔑 API 키: \(Config.tmdbAPIKey.isEmpty ? "❌넣어주세요❌ " : "✅")")
+        #endif
         // URLRequest 생성
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
