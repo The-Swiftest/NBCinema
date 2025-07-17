@@ -26,11 +26,12 @@ class MyPageView: UIView {
 
     let nameLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 20, weight: .bold)
-        $0.text = "example@mail.com"
+        $0.text = "example@mail.com님"
     }
 
     let logoutButton = UIButton().then {
-        $0.setTitle("Log Out", for: .normal)
+        $0.setTitle("  로그아웃", for: .normal)
+        $0.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         $0.setImage(UIImage(systemName: "iphone.and.arrow.right.outward"), for: .normal)
         $0.tintColor = .nbcMain
         $0.setTitleColor(.nbcMain, for: .normal)
@@ -42,8 +43,16 @@ class MyPageView: UIView {
     }
 
     let reservationsMoreButton = UIButton().then {
-        $0.setTitle("더보기 >", for: .normal)
-        $0.setTitleColor(.gray2, for: .normal)
+        var config = UIButton.Configuration.plain()
+        config.imagePlacement = .trailing
+
+        var attr = AttributeContainer()
+        attr.font = .systemFont(ofSize: 16, weight: .bold)
+
+        config.attributedTitle = AttributedString("더보기", attributes: attr)
+        config.baseForegroundColor = .gray2
+        $0.setImage(UIImage(named: "rightArrow"), for: .normal)
+        $0.configuration = config
     }
 
     private let reservationStackView = UIStackView().then {
@@ -135,31 +144,26 @@ class MyPageView: UIView {
             view.removeFromSuperview()
         }
 
-        /// 예매 내역이 없는 경우 label 추가
+        /// 새로운 예매 내역이 없는 경우 label 추가
         if items.isEmpty {
             let emptyLabel = UILabel().then {
                 $0.text = "예매 내역이 없습니다."
                 $0.font = .systemFont(ofSize: 14)
                 $0.textColor = .gray3
+                $0.textAlignment = .center
             }
             self.reservationStackView.addArrangedSubview(emptyLabel)
-        }
-
-        /// 예매 내역 추가
-        for item in items {
-            let reservationView = ReservationView()
-            reservationView.configure(with: item)
-            self.reservationStackView.addArrangedSubview(reservationView)
+            /// 더보기 버튼 비활성화
+            self.reservationsMoreButton.isEnabled = false
+        } else {
+            /// 더보기 버튼 활성화
+            self.reservationsMoreButton.isEnabled = true
+            /// 예매 내역 추가
+            for item in items {
+                let reservationView = ReservationView()
+                reservationView.configure(with: item)
+                self.reservationStackView.addArrangedSubview(reservationView)
+            }
         }
     }
-
-    //	let favoriteLabel = UILabel().then {
-    //		$0.font = .systemFont(ofSize: 24, weight: .bold)
-    //	}
-    //
-    //	let favoriteMoreButton = UIButton().then {
-    //		$0.setTitle("더보기 >", for: .normal)
-    //		$0.setTitleColor(.secondaryLabel, for: .normal)
-    //	}
-    //
 }

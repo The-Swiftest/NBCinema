@@ -32,41 +32,45 @@ class ReservationView: UIView {
     )
 
     private let peopleStackView = SymbolLabelStackView(
-        symbol: UIImage(named: "calendar") ?? UIImage(systemName: "xmark")!,
+        symbol: UIImage(named: "people") ?? UIImage(systemName: "xmark")!,
         title: ""
     )
 
     private let amountStackView = SymbolLabelStackView(
-        symbol: UIImage(named: "calendar") ?? UIImage(systemName: "xmark")!,
+        symbol: UIImage(named: "amount") ?? UIImage(systemName: "xmark")!,
         title: ""
     )
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         setUI()
+
+        self.backgroundColor = .gray5Dynamic
+        self.layer.cornerRadius = 10
+        self.layer.masksToBounds = true
+        self.layer.borderColor = UIColor.borderDynamic.cgColor
+        self.layer.borderWidth = 1
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configure(with item: ReservationDetail) {
-        // TODO: item.posterURL 또는 item.posterImage를 사용하여 posterImageView에 이미지 로드
-        // 예시: URLSession을 사용하여 이미지 로드
-        // if let urlString = item.posterURL, let url = URL(string: urlString) {
-        //     URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-        //         if let data = data, let image = UIImage(data: data) {
-        //             DispatchQueue.main.async {
-        //                 self?.posterImageView.image = image
-        //             }
-        //         }
-        //     }.resume()
-        // }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
 
+        if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+            self.layer.borderColor = UIColor.borderDynamic.cgColor
+        }
+    }
+
+    func configure(with item: ReservationDetail) {
+        let url = URL(string: "\(Config.tmdbImageBaseURL)/w500\(item.posterPath)")!
+        posterImageView.loadImage(from: url)
         movieTitleLabel.text = item.movieTitle
-        dateStackView.label.text = String("ㅁㅇㄴㅁㅇㅁㄴㅇ")
+        dateStackView.label.text = item.reservationTime.toMonthDayString()
         peopleStackView.label.text = String(item.numberOfPeople) + "명"
-        amountStackView.label.text = String(item.amount) + "원"
+        amountStackView.label.text = item.amount.toCommaString() + "원"
     }
 
     private func setUI() {
@@ -79,8 +83,9 @@ class ReservationView: UIView {
         }
 
         posterImageView.snp.makeConstraints {
-            $0.top.leading.bottom.equalToSuperview()
-            $0.width.equalTo(100) // 임시로 100pt로 고정
+            $0.top.leading.equalToSuperview()
+            $0.height.equalTo(130)
+            $0.width.equalTo(100)
         }
 
         movieTitleLabel.snp.makeConstraints {

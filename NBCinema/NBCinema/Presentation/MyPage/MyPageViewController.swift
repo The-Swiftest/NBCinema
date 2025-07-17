@@ -10,6 +10,7 @@ import UIKit
 class MyPageViewController: UIViewController {
 
     let myPageView = MyPageView()
+    let myPageViewModel = MyPageViewModel()
 
     override func loadView() {
         view = myPageView
@@ -17,7 +18,8 @@ class MyPageViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.isHidden = true
+        self.navigationController?.isNavigationBarHidden = true
+        refreshReservations()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -27,14 +29,34 @@ class MyPageViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
 
-        var mockData = [ReservationDetail]()
+    private func refreshReservations() {
+        var reservationData = [ReservationDetail]()
 
-        mockData.append(ReservationDetail(movieTitle: "a", reservationTime: Date(), runtime: 2, numberOfPeople: 3, amount: 4))
-        mockData.append(ReservationDetail(movieTitle: "b", reservationTime: Date(), runtime: 3, numberOfPeople: 4, amount: 5))
-        mockData.append(ReservationDetail(movieTitle: "a", reservationTime: Date(), runtime: 2, numberOfPeople: 3, amount: 4))
-        mockData.append(ReservationDetail(movieTitle: "b", reservationTime: Date(), runtime: 3, numberOfPeople: 4, amount: 5))
-        myPageView.makeReservationView(items: mockData)
+        myPageViewModel.onStateChanged = { state in
+            for (idx, item) in state.reservationData.enumerated() {
+                if idx < 4 {
+                    reservationData.append(item)
+                } else {
+                    break
+                }
+            }
+        }
+
+        myPageViewModel.onError = { [weak self] error in
+            print(error)
+            let alert = UIAlertController(
+                title: "오류",
+                message: "데이터 갱신에 실패하였습니다.",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "확인", style: .default))
+            self?.present(alert, animated: true, completion: nil)
+        }
+
+        myPageViewModel.action(.fetchData)
+        myPageView.makeReservationView(items: reservationData)
     }
 }
 
