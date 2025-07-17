@@ -22,6 +22,11 @@ struct MovieCreditsResponse: Decodable {
     var mainCast: [String] {
         return Array(cast.prefix(5).map { $0.name })
     }
+    
+    // 튜플 반환용 프로퍼티
+    var credits: (director: String?, cast: [String]) {
+        (director: director, cast: mainCast)
+    }
 }
 
 struct CastInfo: Decodable {
