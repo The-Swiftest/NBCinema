@@ -29,6 +29,9 @@ protocol MovieRepository {
     /// 장르 목록 조회
     func fetchGenres() async -> Result<[Genre], Error>
     
+    /// 장르별 영화 필터링
+    func fetchMoviesByGenre(genreId: Int) async -> Result<[Movie], Error>
+    
     /// 영화 크레딧 정보 조회 (감독, 출연진)
     func fetchMovieCredits(id: Int) async -> Result<(director: String?, cast: [String]), Error>
 }
