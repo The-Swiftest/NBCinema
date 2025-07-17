@@ -23,4 +23,11 @@ extension Int {
             return "-"
         }
     }
+
+    func toCommaString() -> String {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        numberFormatter.locale = Locale(identifier: "ko_KR")
+        return numberFormatter.string(from: NSNumber(value: self)) ?? "\(self)"
+    }
 }
