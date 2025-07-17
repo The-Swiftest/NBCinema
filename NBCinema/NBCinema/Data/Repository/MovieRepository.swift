@@ -23,6 +23,9 @@ protocol MovieRepository {
     /// 영화 상세 정보 조회
     func fetchMovieDetail(id: Int) async throws -> MovieDetail
     
+    /// 영화 크레딧 정보 조회 (감독, 출연진)
+    func fetchMovieCredits(id: Int) async throws -> (director: String?, cast: [String])
+    
     /// 영화 검색
     func searchMovies(query: String) async throws -> [Movie]
     
@@ -31,7 +34,4 @@ protocol MovieRepository {
     
     /// 장르별 영화 필터링
     func fetchMoviesByGenre(genreId: Int) async throws -> [Movie]
-    
-    /// 영화 크레딧 정보 조회 (감독, 출연진)
-    func fetchMovieCredits(id: Int) async throws -> (director: String?, cast: [String])
 }
