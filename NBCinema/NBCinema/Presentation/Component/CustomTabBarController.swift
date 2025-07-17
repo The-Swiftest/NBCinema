@@ -11,9 +11,19 @@ class CustomTabBarController: UITabBarController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		setValue(CustomTabBar(), forKey: "tabBar")
 		customizeTabBarAppearance()
 	}
+
+    private let customTabBarHeight: CGFloat = 60
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        var tabBarFrame = tabBar.frame
+        tabBarFrame.size.height = customTabBarHeight + tabBar.safeAreaInsets.bottom
+        tabBarFrame.origin.y = view.frame.height - customTabBarHeight - tabBar.safeAreaInsets.bottom
+        tabBar.frame = tabBarFrame
+    }
 
 	private func customizeTabBarAppearance() {
 		tabBar.tintColor = .nbcMain
