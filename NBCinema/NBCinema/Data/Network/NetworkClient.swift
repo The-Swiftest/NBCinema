@@ -13,41 +13,43 @@ final class NetworkClient {
     private init() {}
     
     /// GET 요청
-    func request<T: Decodable>(url: URL) async -> Result<T, NetworkError> {
+    func request<T: Decodable>(url: URL) async throws(NetworkError) -> T {
+        
+        // URLRequest 생성
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(Config.tmdbAPIKey)", forHTTPHeaderField: "Authorization")
+        
         do {
-            // URLRequest 생성
-            var request = URLRequest(url: url)
-            request.httpMethod = "GET"
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.setValue("Bearer \(Config.tmdbAPIKey)", forHTTPHeaderField: "Authorization")
-            
             // 네트워크 요청 수행
             let (data, response) = try await URLSession.shared.data(for: request)
             
             // HTTP 응답 상태 확인
             guard let httpResponse = response as? HTTPURLResponse else {
-                return .failure(.unknown)
+                throw NetworkError.unknown
             }
             
             guard 200...299 ~= httpResponse.statusCode else {
-                return .failure(.serverError(httpResponse.statusCode))
+                throw NetworkError.serverError(httpResponse.statusCode)
             }
             
             guard !data.isEmpty else {
-                return .failure(.noData)
+                throw NetworkError.noData
             }
             
             // JSON Decoding
-            do {
-                let decoder = JSONDecoder()
-                let result = try decoder.decode(T.self, from: data)
-                return .success(result)
-            } catch {
-                return .failure(.decodingError)
-            }
-            
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(T.self, from: data)
+            return result
+        }
+        
+        catch let decodingError as DecodingError {
+            throw NetworkError.decodingError  // 디코딩 에러
+        } catch let networkError as NetworkError {
+            throw networkError  // 이미 NetworkError인 경우 그대로 던지기
         } catch {
-            return .failure(.networkError(error.localizedDescription))
+            throw NetworkError.networkError(error.localizedDescription)  // 기타 에러
         }
     }
 }

@@ -9,26 +9,29 @@ import Foundation
 
 protocol MovieRepository {
     /// 현재 상영중 영화 목록 조회
-    func fetchNowPlayingMovies() async -> Result<[Movie], Error>
+    func fetchNowPlayingMovies() async throws -> [Movie]
     
     /// 인기 영화 목록 조회
-    func fetchPopularMovies() async -> Result<[Movie], Error>
+    func fetchPopularMovies() async throws -> [Movie]
     
     /// 개봉 예정 영화 목록 조회
-    func fetchUpcomingMovies() async -> Result<[Movie], Error>
+    func fetchUpcomingMovies() async throws -> [Movie]
     
     /// 높은 평점 영화 목록 조회
-    func fetchTopRatedMovies() async -> Result<[Movie], Error>
+    func fetchTopRatedMovies() async throws -> [Movie]
     
     /// 영화 상세 정보 조회
-    func fetchMovieDetail(id: Int) async -> Result<MovieDetail, Error>
+    func fetchMovieDetail(id: Int) async throws -> MovieDetail
     
     /// 영화 검색
-    func searchMovies(query: String) async -> Result<[Movie], Error>
+    func searchMovies(query: String) async throws -> [Movie]
     
     /// 장르 목록 조회
-    func fetchGenres() async -> Result<[Genre], Error>
+    func fetchGenres() async throws -> [Genre]
+    
+    /// 장르별 영화 필터링
+    func fetchMoviesByGenre(genreId: Int) async throws -> [Movie]
     
     /// 영화 크레딧 정보 조회 (감독, 출연진)
-    func fetchMovieCredits(id: Int) async -> Result<(director: String?, cast: [String]), Error>
+    func fetchMovieCredits(id: Int) async throws -> (director: String?, cast: [String])
 }

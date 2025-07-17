@@ -22,29 +22,38 @@ class MainTabCoordinator: BaseCoordinator {
     
     private func setUPTabBar() {
         let tabBarController = CustomTabBarController()
-
+        
+        // TODO: 추후 MovieRepository로 교체
+        let movieRepository: MovieRepository = MockMovieRepository()
+        
         // 영화목록 탭
         let movieListNav = UINavigationController()
-        let movieListCoordinator = MovieListCoordinator(navigationController: movieListNav)
+        let movieListCoordinator = MovieListCoordinator(
+            navigationController: movieListNav,
+            movieRepository: movieRepository
+        )
         addChildCoordinator(movieListCoordinator)
         movieListCoordinator.start()
-
+        
         // 검색 탭
         let searchNav = UINavigationController()
-        let searchCoordinator = SearchCoordinator(navigationController: searchNav)
+        let searchCoordinator = SearchCoordinator(
+            navigationController: searchNav,
+            movieRepository: movieRepository
+        )
         addChildCoordinator(searchCoordinator)
         searchCoordinator.start()
-
+        
         // 마이페이지 탭
         let myPageNav = UINavigationController()
         let myPageCoordinator = MyPageCoordinator(navigationController: myPageNav)
         myPageCoordinator.delegate = self
         addChildCoordinator(myPageCoordinator)
         myPageCoordinator.start()
-
+        
         tabBarController.viewControllers = [movieListNav, searchNav, myPageNav]
-		tabBarController.setItems()
-		self.tabBarController = tabBarController
+        tabBarController.setItems()
+        self.tabBarController = tabBarController
         navigationController.setViewControllers([tabBarController], animated: true)
     }
 }
