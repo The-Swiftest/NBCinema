@@ -51,7 +51,7 @@ final class NbcInputField: UIView {
     
     // 비밀번호 보기/숨기기 토글 버튼
     private lazy var eyeButton = UIButton().then {
-        $0.setImage(UIImage(systemName: "eye.slash"), for: .normal)
+        $0.setImage(UIImage(named: "eyeClose"), for: .normal)
         $0.tintColor = .gray3
         $0.addTarget(self, action: #selector(togglePasswordVisibility), for: .touchUpInside)
         $0.isHidden = true
@@ -68,8 +68,8 @@ final class NbcInputField: UIView {
     // 현재 비밀번호 표시 여부 상태
     private var isPasswordVisible = false {
         didSet {
-            let iconName = isPasswordVisible ? "eye" : "eye.slash"
-            eyeButton.setImage(UIImage(systemName: iconName), for: .normal)
+            let icon = isPasswordVisible ? UIImage(systemName: "eye") : UIImage(named: "eyeClose")
+            eyeButton.setImage(icon, for: .normal)
             textField.isSecureTextEntry = !isPasswordVisible
         }
     }
