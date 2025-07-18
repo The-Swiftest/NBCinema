@@ -22,34 +22,9 @@ class MyPageCoordinator: BaseCoordinator {
     /// 마이페이지 화면 표시
     private func showMyPage() {
         // TODO: MyPageViewController 구현 후 연결
-        let myPageVC = UIViewController() // 임시 ViewController
-        myPageVC.view.backgroundColor = .systemTeal
-        myPageVC.title = "마이페이지"
-        
-        // 로그아웃 버튼 추가 (임시)
-        let logoutButton = UIButton(type: .system)
-        logoutButton.setTitle("로그아웃 (임시)", for: .normal)
-        logoutButton.setTitleColor(.white, for: .normal)
-        logoutButton.backgroundColor = .systemRed
-        logoutButton.layer.cornerRadius = 8
-        logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
-        
-        myPageVC.view.addSubview(logoutButton)
-        
-        logoutButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            logoutButton.centerXAnchor.constraint(equalTo: myPageVC.view.centerXAnchor),
-            logoutButton.topAnchor.constraint(equalTo: myPageVC.view.safeAreaLayoutGuide.topAnchor, constant: 60),
-            logoutButton.widthAnchor.constraint(equalToConstant: 120),
-            logoutButton.heightAnchor.constraint(equalToConstant: 44)
-        ])
-        
+		let myPageVC = MyPageViewController()
+        myPageVC.coordinator = self
         navigationController.setViewControllers([myPageVC], animated: false)
-    }
-    
-    @objc private func logoutTapped() {
-        delegate?.myPageCoordinatorDidLogout(self)
     }
     
     /// 예매 내역 화면으로 이동
@@ -70,5 +45,10 @@ class MyPageCoordinator: BaseCoordinator {
         favoriteVC.title = "찜한 영화"
         
         navigationController.pushViewController(favoriteVC, animated: true)
+    }
+
+    /// 오류 알림창 출력
+    func showErrorAlert(alert: UIAlertController) {
+        navigationController.pushViewController(alert, animated: false)
     }
 }
