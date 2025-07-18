@@ -7,6 +7,7 @@
 
 import Foundation
 
+#if DEBUG
 /// 목데이터 정의
 enum MockData {
 
@@ -447,3 +448,4 @@ enum MockData {
         }
     }
 }
+#endif
