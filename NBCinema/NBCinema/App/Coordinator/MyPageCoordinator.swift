@@ -23,13 +23,8 @@ class MyPageCoordinator: BaseCoordinator {
     private func showMyPage() {
         // TODO: MyPageViewController 구현 후 연결
 		let myPageVC = MyPageViewController()
-
-        myPageVC.myPageView.logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
+        myPageVC.coordinator = self
         navigationController.setViewControllers([myPageVC], animated: false)
-    }
-    
-    @objc private func logoutTapped() {
-        delegate?.myPageCoordinatorDidLogout(self)
     }
     
     /// 예매 내역 화면으로 이동

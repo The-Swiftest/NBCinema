@@ -8,7 +8,7 @@
 import UIKit
 
 class MyPageViewController: UIViewController {
-
+    weak var coordinator: MyPageCoordinator?
     let myPageView = MyPageView()
     let myPageViewModel = MyPageViewModel()
 
@@ -29,6 +29,7 @@ class MyPageViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        myPageView.logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
     }
 
     private func refreshReservations() {
@@ -57,6 +58,16 @@ class MyPageViewController: UIViewController {
 
         myPageViewModel.action(.fetchData)
         myPageView.makeReservationView(items: reservationData)
+    }
+}
+
+extension MyPageViewController {
+    @objc private func logoutTapped() {
+        guard coordinator != nil else {
+            print("Mypage coordinator is nil")
+            return
+        }
+        coordinator!.delegate?.myPageCoordinatorDidLogout(coordinator!)
     }
 }
 
