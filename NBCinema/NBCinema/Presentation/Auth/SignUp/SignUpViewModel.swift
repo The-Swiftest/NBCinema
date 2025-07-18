@@ -7,7 +7,7 @@
 
 import Foundation
 
-class SignUpViewModel {
+class SignUpViewModel: ViewModelProtocol {
     enum Action {
         case emailChanged(String)
         case passwordChanged(String)
@@ -36,7 +36,6 @@ class SignUpViewModel {
     }
     
     var onStateChanged: ((State) -> Void)?
-    private let service = "NBCinema"            // 키체인 서비스 이름
     
     func action(_ action: Action) {
         switch action {
@@ -54,7 +53,7 @@ class SignUpViewModel {
             validateConfirmPassword()
             
         case .signUp:
-            state.isSignedUp = KeychainService.save(service: service, account: state.email, value: state.password)
+            state.isSignedUp = KeychainService.save(service: KeychainConstants.service, account: KeychainConstants.emailAccount, value: state.email) && KeychainService.save(service: KeychainConstants.service, account: KeychainConstants.passwordAccount, value: state.password)
         }
         
         updateSignUpEnabled()
@@ -105,7 +104,7 @@ class SignUpViewModel {
     }
     
     // 이메일 유효성 검사 (~~~@~~~.~~~)
-    private func isValidEmail(_ email: String) -> Bool {
+    func isValidEmail(_ email: String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
         return NSPredicate(format:"SELF MATCHES %@", emailRegEx).evaluate(with: email)
     }
