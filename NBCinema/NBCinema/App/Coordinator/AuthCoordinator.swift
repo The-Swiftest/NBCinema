@@ -92,37 +92,13 @@ class AuthCoordinator: BaseCoordinator {
     
     /// 회원가입 화면 표시
     func showSignUp() {
-        let signUpVC = UIViewController()
-        signUpVC.view.backgroundColor = .systemGreen
-        signUpVC.title = "회원가입"
-        
+        let signUpVC = SignUpViewController(viewModel: SignUpViewModel())
+        signUpVC.coordinator = self
         signUpVC.navigationItem.hidesBackButton = true
-        
-        // 뒤로가기 버튼
-        let backButton = UIButton(type: .system)
-        backButton.setTitle("회원가입완료(로그인으로)", for: .normal)
-        backButton.setTitleColor(.white, for: .normal)
-        backButton.backgroundColor = .systemBlue
-        backButton.layer.cornerRadius = 8
-        backButton.addTarget(self, action: #selector(backToLogin), for: .touchUpInside)
-        
-        
-        
-        signUpVC.view.addSubview(backButton)
-        
-        backButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            backButton.centerXAnchor.constraint(equalTo: signUpVC.view.centerXAnchor),
-            backButton.topAnchor.constraint(equalTo: signUpVC.view.safeAreaLayoutGuide.topAnchor, constant: 120),
-            backButton.widthAnchor.constraint(equalToConstant: 200),
-            backButton.heightAnchor.constraint(equalToConstant: 50)
-        ])
-        
         navigationController.pushViewController(signUpVC, animated: true)
     }
     
-    @objc private func backToLogin() {
+    func backToLogin() {
         navigationController.popViewController(animated: true)
     }
 }
