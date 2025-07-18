@@ -28,6 +28,7 @@ final class NbcInputField: UIView {
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor.white.cgColor
         $0.autocapitalizationType = .none
+        $0.returnKeyType = .done
         $0.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: $0.frame.height))
         $0.leftViewMode = .always
         $0.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: $0.frame.height))
