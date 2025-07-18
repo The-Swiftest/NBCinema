@@ -77,7 +77,11 @@ class MovieRankingCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         containerView.layer.shadowPath = UIBezierPath(
-            roundedRect: containerView.bounds,
+            roundedRect: CGRect(
+                x: 0, y: 0,
+                width: contentView.bounds.width,
+                height: contentView.bounds.width * 1.15
+            ),
             cornerRadius: 16
         ).cgPath
     }

@@ -11,8 +11,6 @@ import Then
 
 class MovieListViewController: UIViewController {
     
-    // MARK: - Constants
-    
     // MARK: - Properties
     
     typealias DataSource = UICollectionViewDiffableDataSource<MovieSection, Movie>
@@ -25,9 +23,6 @@ class MovieListViewController: UIViewController {
     private var popularMovies: [Movie] = []
     private var upcomingMovies: [Movie] = []
     private var topRatedMovies: [Movie] = []
-    
-    
-    // MARK: - Closures
     
     // MARK: - UI Components
     
@@ -84,6 +79,11 @@ class MovieListViewController: UIViewController {
     }
     
     func setupDataSource() {
+        let rankingCellRegistration = UICollectionView.CellRegistration<MovieRankingCell, Movie> {
+            cell, indexPath, movie in
+            cell.configure(movie: movie, ranking: indexPath.item + 1)
+        }
+        
         let posterCellRegistration = UICollectionView.CellRegistration<MoviePosterCell, Movie> {
             cell, indexPath, movie in
             cell.configure(movie: movie)
@@ -96,14 +96,26 @@ class MovieListViewController: UIViewController {
             headerView.configure(title: section.title)
         }
         
-        dataSource = DataSource(collectionView: collectionView) { collectionView, indexPath, movie in
-            return collectionView.dequeueConfiguredReusableCell(
-                using: posterCellRegistration, for: indexPath, item: movie
-            )
+        dataSource = DataSource(collectionView: collectionView) {
+            collectionView, indexPath, movie in
+            let section = MovieSection(rawValue: indexPath.section)!
+            
+            switch section {
+            case .nowPlaying:
+                return collectionView.dequeueConfiguredReusableCell(
+                    using: rankingCellRegistration, for: indexPath, item: movie
+                )
+            default:
+                return collectionView.dequeueConfiguredReusableCell(
+                    using: posterCellRegistration, for: indexPath, item: movie
+                )
+            }
         }
         
-        dataSource?.supplementaryViewProvider = { collectionView, kind, indexPath in
+        dataSource?.supplementaryViewProvider = {
+            collectionView, kind, indexPath in
             let section = MovieSection(rawValue: indexPath.section)!
+            
             if section.showHeader {
                 return collectionView.dequeueConfiguredReusableSupplementary(
                     using: headerRegistration, for: indexPath
@@ -112,8 +124,6 @@ class MovieListViewController: UIViewController {
             return nil
         }
     }
-    
-    // MARK: - Actions
     
     // MARK: - Methods
     
@@ -131,20 +141,20 @@ class MovieListViewController: UIViewController {
                 topRatedMovies = try await topRated
                 
                 await MainActor.run {
-                    setupSnapShot()
+                    updateSnapShot()
                 }
                 
             } catch {
                 await MainActor.run {
                     print("❌ 영화 데이터 로드 실패: \(error)")
                     // 에러 발생 시 빈 데이터로 스냅샷 적용
-                    setupSnapShot()
+                    updateSnapShot()
                 }
             }
         }
     }
     
-    func setupSnapShot() {
+    func updateSnapShot() {
         var snapshot = Snapshot()
         snapshot.appendSections(MovieSection.allCases)
         
@@ -238,3 +248,4 @@ extension MovieListViewController: UICollectionViewDelegate {
         print("section: \(indexPath.section), item: \(indexPath.item)")
     }
 }
+
