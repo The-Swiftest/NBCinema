@@ -65,8 +65,7 @@ class ReservationView: UIView {
     }
 
     func configure(with item: ReservationDetail) {
-        let url = URL(string: "\(Config.tmdbImageBaseURL)/w500\(item.posterPath)")!
-        posterImageView.loadImage(from: url)
+        posterImageView.loadImage(from: item.posterURL ?? URL(fileURLWithPath: "https://placehold.co/400x600"))
         movieTitleLabel.text = item.movieTitle
         dateStackView.label.text = item.reservationTime.toMonthDayString()
         peopleStackView.label.text = String(item.numberOfPeople) + "명"

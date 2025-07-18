@@ -31,4 +31,8 @@ class ReservationDetail: Object {
 		self.amount = amount
         self.posterPath = posterPath
 	}
+
+    var posterURL: URL? {
+        URL(string: "\(Config.tmdbImageBaseURL)/w500\(posterPath)")
+    }
 }
