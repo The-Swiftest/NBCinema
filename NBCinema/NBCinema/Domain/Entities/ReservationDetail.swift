@@ -15,17 +15,24 @@ class ReservationDetail: Object {
 	@Persisted var runtime: Int
 	@Persisted var numberOfPeople: Int
 	@Persisted var amount: Int
+    @Persisted var posterPath: String
 
 	convenience init(movieTitle: String,
 					 reservationTime: Date,
 					 runtime: Int,
 					 numberOfPeople: Int,
-					 amount: Int) {
+					 amount: Int,
+                     posterPath: String) {
 		self.init()
 		self.movieTitle = movieTitle
 		self.reservationTime = reservationTime
 		self.runtime = runtime
 		self.numberOfPeople = numberOfPeople
 		self.amount = amount
+        self.posterPath = posterPath
 	}
+
+    var posterURL: URL? {
+        URL(string: "\(Config.tmdbImageBaseURL)/w500\(posterPath)")
+    }
 }
