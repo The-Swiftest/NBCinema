@@ -46,4 +46,9 @@ class MyPageCoordinator: BaseCoordinator {
         
         navigationController.pushViewController(favoriteVC, animated: true)
     }
+
+    /// 오류 알림창 출력
+    func showErrorAlert(alert: UIAlertController) {
+        navigationController.pushViewController(alert, animated: false)
+    }
 }

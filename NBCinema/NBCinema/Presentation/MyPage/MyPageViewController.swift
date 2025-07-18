@@ -53,7 +53,7 @@ class MyPageViewController: UIViewController {
                 preferredStyle: .alert
             )
             alert.addAction(UIAlertAction(title: "확인", style: .default))
-            self?.present(alert, animated: true, completion: nil)
+            self?.coordinator?.showErrorAlert(alert: alert)
         }
 
         myPageViewModel.action(.fetchData)
