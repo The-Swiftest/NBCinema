@@ -63,9 +63,11 @@ class LoginView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - UI 구성
+    
     private func setupUI() {
         layer.insertSublayer(gradientLayer, at: 0)
-        //loginButton.isEnabled = false
+        loginButton.isEnabled = false
         
         [questionLabel, moveToSignUpButton].forEach {
             questionStackView.addArrangedSubview($0)
