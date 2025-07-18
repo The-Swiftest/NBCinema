@@ -24,6 +24,16 @@ extension Movie: Decodable {
     }
 }
 
+extension Movie: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: Movie, rhs: Movie) -> Bool {
+        return lhs.id == rhs.id
+    }
+}
+
 extension Movie {
     /// 포스터 이미지 URL 반환 (Kingfisher용)
     @inlinable
