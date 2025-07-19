@@ -174,4 +174,3 @@ extension MovieListViewController: UICollectionViewDelegate {
         print("section: \(indexPath.section), item: \(indexPath.item)")
     }
 }
-
