@@ -19,4 +19,28 @@ extension Date {
 
         return str
     }
+
+    /// Date를 "수" 이런 식으로 무슨 요일인지 문자열로 변환
+    func toDayofWeekString() -> String {
+        let formatter = DateFormatter()
+        
+        formatter.dateFormat = "EEE"
+        formatter.locale = Locale(identifier: "ko_KR")
+        
+        let str = formatter.string(from: self)
+        
+        return str
+    }
+
+    /// Date를 "17" 이런 식으로 몇 일인지 문자열로 변환
+    func toDayString() -> String {
+        let formatter = DateFormatter()
+
+        formatter.dateFormat = "dd"
+        formatter.locale = Locale(identifier: "ko_KR")
+
+        let str = formatter.string(from: self)
+
+        return str
+    }
 }
