@@ -21,7 +21,7 @@ class AuthCoordinator: BaseCoordinator {
     
     /// 로그인 화면 표시
     private func showLogin() {
-        let authVC = LoginViewController()
+        let authVC = LoginViewController(viewModel: LoginViewModel())
         authVC.coordinator = self
         navigationController.setViewControllers([authVC], animated: false)
     }
