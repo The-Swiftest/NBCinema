@@ -112,43 +112,50 @@ class SignUpViewController: UIViewController {
 
 extension SignUpViewController: UITextFieldDelegate {
     
+    // 키보드 done 버튼 누를 때 다음 텍스트 필드로 이동
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == signUpView.emailInput.textField {
+            signUpView.passwordInput.textField.becomeFirstResponder()
+        } else if textField == signUpView.passwordInput.textField {
+            signUpView.confirmPasswordInput.textField.becomeFirstResponder()
+        } else if textField == signUpView.confirmPasswordInput.textField {
+            signUpView.confirmPasswordInput.textField.resignFirstResponder()
+        }
+        return true
+    }
+    
     // 텍스트 필드 포커스 진입 시 placeholder 위로 이동
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        UIView.animate(withDuration: 0.25) {
-            guard let (placeholder, input) = self.textFieldPlaceholderPair(for: textField) else { return }
-            placeholder.snp.updateConstraints {
-                $0.centerY.equalTo(input).offset(-15)
-            }
-            placeholder.font = .systemFont(ofSize: 12)
-            placeholder.superview?.layoutIfNeeded()
-        }
+        updatePlaceholder(for: textField)
     }
     
     // 텍스트 필드 포커스 종료 시 (빈 경우) placeholder 원래 위치로 복귀
     func textFieldDidEndEditing(_ textField: UITextField) {
-        guard textField.text?.isEmpty ?? true else { return }
-        
-        UIView.animate(withDuration: 0.25) {
-            guard let (placeholder, input) = self.textFieldPlaceholderPair(for: textField) else { return }
-            placeholder.snp.updateConstraints {
-                $0.centerY.equalTo(input)
-            }
-            placeholder.font = .systemFont(ofSize: 16)
-            placeholder.superview?.layoutIfNeeded()
+        updatePlaceholder(for: textField)
+    }
+    
+    // placeholder 반환
+    private func getPlaceholder(for textField: UITextField) -> UILabel? {
+        switch textField {
+        case signUpView.emailInput.textField:
+            return signUpView.emailInput.placeholderLabel
+        case signUpView.passwordInput.textField:
+            return signUpView.passwordInput.placeholderLabel
+        case signUpView.confirmPasswordInput.textField:
+            return signUpView.confirmPasswordInput.placeholderLabel
+        default:
+            return nil
         }
     }
     
-    // 텍스트필드와 placeholder 쌍을 반환
-    private func textFieldPlaceholderPair(for textField: UITextField) -> (UILabel, UITextField)? {
-        switch textField {
-        case signUpView.emailInput.textField:
-            return (signUpView.emailInput.placeholderLabel, signUpView.emailInput.textField)
-        case signUpView.passwordInput.textField:
-            return (signUpView.passwordInput.placeholderLabel, signUpView.passwordInput.textField)
-        case signUpView.confirmPasswordInput.textField:
-            return (signUpView.confirmPasswordInput.placeholderLabel, signUpView.confirmPasswordInput.textField)
-        default:
-            return nil
+    private func updatePlaceholder(for textField: UITextField) {
+        guard let placeholder = getPlaceholder(for: textField) else { return }
+        
+        let isEmpty = textField.text?.isEmpty ?? true
+        let shouldMoveUp = textField.isFirstResponder || !isEmpty
+        
+        UIView.animate(withDuration: 0.25) {
+            placeholder.transform = shouldMoveUp ? CGAffineTransform(translationX: -5, y: -15).scaledBy(x: 0.75, y: 0.75) : .identity
         }
     }
 }
