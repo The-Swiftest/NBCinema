@@ -16,7 +16,10 @@ final class ReserveView: UIView {
 
     private let headerView = HeaderView(.sub("예매하기"))
 
-    private let scrollView = UIScrollView()
+    private let scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+    }
+
     private let contentView = UIView()
 
     private let posterImageView = UIImageView().then {
@@ -113,6 +116,22 @@ final class ReserveView: UIView {
     private let youthCountView = CountView()
 
     private let paymentButton = NbcButton(title: "결제하기")
+
+    // MARK: - Properties
+
+    private var bottomSafeAreaInset: CGFloat = 0 {
+        willSet(newVal) {
+            contentView.snp.updateConstraints {
+                $0.edges.equalTo(scrollView.contentLayoutGuide).inset(
+                    UIEdgeInsets(top: 0, left: 0, bottom: -newVal, right: 0))
+            }
+
+            paymentButton.snp.updateConstraints {
+                $0.bottom.equalToSuperview().inset(
+                    UIEdgeInsets(top: 0, left: 0, bottom: 20 + newVal, right: 0))
+            }
+        }
+    }
 
     // MARK: - Initializers
 
@@ -349,6 +368,12 @@ final class ReserveView: UIView {
             reserveDateView.addGestureRecognizer(tapGesture)
             dateStackView.addArrangedSubview(reserveDateView)
         }
+    }
+
+    // MARK: - Methods
+
+    func setBottomSafeAreaInset(inset: CGFloat) {
+        bottomSafeAreaInset = inset
     }
 
     // MARK: - Actions

@@ -19,6 +19,11 @@ class ReserveViewController: UIViewController {
 
     override func viewDidLoad() {
         self.navigationController?.isNavigationBarHidden = true
+        tabBarController?.tabBar.isHidden = true
+    }
+
+    override func viewDidLayoutSubviews() {
+        reserveView.setBottomSafeAreaInset(inset: view.safeAreaInsets.bottom)
     }
 }
 
