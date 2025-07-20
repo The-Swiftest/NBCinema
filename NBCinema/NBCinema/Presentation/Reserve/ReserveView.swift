@@ -93,8 +93,8 @@ final class ReserveView: UIView {
     }
 
     private let peopleSymbolLabelStackView = SymbolLabelStackView(
-        symbol: UIImage(named: "clock") ?? UIImage(systemName: "xmark")!,
-        title: "시간 선택").then {
+        symbol: UIImage(named: "peopleDark") ?? UIImage(systemName: "xmark")!,
+        title: "인원 선택").then {
             $0.label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
             $0.label.textColor = .black
     }
