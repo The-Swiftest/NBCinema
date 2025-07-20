@@ -12,7 +12,7 @@ class LoginViewController: UIViewController {
     weak var coordinator: AuthCoordinator?
     private let viewModel: LoginViewModel
     private let loginView = LoginView()
-    private var didTapLoginButton = false
+    private var isLogin = false
     
     init(viewModel: LoginViewModel) {
         self.viewModel = viewModel
@@ -59,20 +59,20 @@ class LoginViewController: UIViewController {
     private func bindViewModel() {
         viewModel.onStateChanged = { [weak self] state in
             guard let self else { return }
-            self.loginView.emailInput.textField.text = state.email
-            self.loginView.passwordInput.textField.text = state.password
-            self.loginView.emailInput.setHidden(state.email.isEmpty)
-            self.loginView.passwordInput.setHidden(state.password.isEmpty)
-            self.loginView.emailInput.setError(state.emailError)
-            self.loginView.loginButton.isEnabled = state.isLoginEnabled
+            loginView.emailInput.textField.text = state.email
+            loginView.passwordInput.textField.text = state.password
+            loginView.emailInput.setHidden(state.email.isEmpty)
+            loginView.passwordInput.setHidden(state.password.isEmpty)
+            loginView.emailInput.setError(state.emailError)
+            loginView.loginButton.isEnabled = state.isLoginEnabled
             
-            if self.didTapLoginButton {
+            if isLogin {
                 if state.isLoginSuccess {
-                    self.coordinator?.loginCompleted()
+                    coordinator?.loginCompleted()
                 } else {
-                    self.showAlert()
+                    showAlert()
                 }
-                self.didTapLoginButton = false
+                isLogin = false
             }
             
             updatePlaceholder(for: loginView.emailInput.textField)
@@ -93,7 +93,7 @@ class LoginViewController: UIViewController {
     }
     
     @objc private func loginTapped() {
-        didTapLoginButton = true
+        isLogin = true
         viewModel.action(.login)
     }
     
@@ -103,7 +103,7 @@ class LoginViewController: UIViewController {
     
     // 로그인 실패 시 Alert
     private func showAlert() {
-        let alert = UIAlertController(title: "실패", message: "아이디 또는 비밀번호가 틀립니다.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "실패", message: "이메일 또는 비밀번호가 틀립니다.", preferredStyle: .alert)
         alert.addAction(.init(title: "확인", style: .default))
         present(alert, animated: true)
     }
@@ -133,30 +133,26 @@ extension LoginViewController: UITextFieldDelegate {
         updatePlaceholder(for: textField)
     }
     
-    // 텍스트필드와 placeholder 쌍을 반환
-    private func textFieldPlaceholderPair(for textField: UITextField) -> (UILabel, UITextField)? {
+    // placeholder 반환
+    private func getPlaceholder(for textField: UITextField) -> UILabel? {
         switch textField {
         case loginView.emailInput.textField:
-            return (loginView.emailInput.placeholderLabel, loginView.emailInput.textField)
+            return loginView.emailInput.placeholderLabel
         case loginView.passwordInput.textField:
-            return (loginView.passwordInput.placeholderLabel, loginView.passwordInput.textField)
+            return loginView.passwordInput.placeholderLabel
         default:
             return nil
         }
     }
     
     private func updatePlaceholder(for textField: UITextField) {
-        guard let (placeholder, input) = textFieldPlaceholderPair(for: textField) else { return }
+        guard let placeholder = getPlaceholder(for: textField) else { return }
         
         let isEmpty = textField.text?.isEmpty ?? true
         let shouldMoveUp = textField.isFirstResponder || !isEmpty
         
         UIView.animate(withDuration: 0.25) {
-            placeholder.snp.updateConstraints {
-                $0.centerY.equalTo(input).offset(shouldMoveUp ? -15 : 0)
-            }
-            placeholder.font = .systemFont(ofSize: shouldMoveUp ? 12 : 16)
-            placeholder.superview?.layoutIfNeeded()
+            placeholder.transform = shouldMoveUp ? CGAffineTransform(translationX: -5, y: -15).scaledBy(x: 0.75, y: 0.75) : .identity
         }
     }
 }

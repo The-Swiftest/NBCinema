@@ -51,7 +51,18 @@ class LoginViewModel: ViewModelProtocol {
             state.password = password
             
         case .login:        // 키체인에 저장된 값과 입력값이 다를 경우 로그인 실패
-            state.isLoginSuccess = (userEmail == state.email && userPassword == state.password) ? KeychainService.save(service: KeychainConstants.service, account: KeychainConstants.emailAccount, value: state.email) && KeychainService.save(service: KeychainConstants.service, account: KeychainConstants.passwordAccount, value: state.password) : false
+            state.isLoginSuccess = if (userEmail == state.email && userPassword == state.password) {
+                KeychainService.save(
+                    service: KeychainConstants.service,
+                    account: KeychainConstants.emailAccount,
+                    value: state.email
+                ) && KeychainService.save(
+                    service: KeychainConstants.service,
+                    account: KeychainConstants.passwordAccount,
+                    value: state.password)
+            } else {
+                false
+            }
             
             if !state.isLoginSuccess {
                 state.email = ""
@@ -66,7 +77,7 @@ class LoginViewModel: ViewModelProtocol {
     private func validateEmail() {
         if state.email.isEmpty {
             state.emailError = "이메일을 입력해주세요."
-        } else if SignUpViewModel().isValidEmail(state.email) {
+        } else if Validator.isValidEmail(state.email) {
             state.emailError = nil
         } else {
             state.emailError = "올바른 이메일 형식이 아닙니다."

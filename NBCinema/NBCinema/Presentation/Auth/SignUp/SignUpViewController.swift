@@ -134,32 +134,28 @@ extension SignUpViewController: UITextFieldDelegate {
         updatePlaceholder(for: textField)
     }
     
-    // 텍스트필드와 placeholder 쌍을 반환
-    private func textFieldPlaceholderPair(for textField: UITextField) -> (UILabel, UITextField)? {
+    // placeholder 반환
+    private func getPlaceholder(for textField: UITextField) -> UILabel? {
         switch textField {
         case signUpView.emailInput.textField:
-            return (signUpView.emailInput.placeholderLabel, signUpView.emailInput.textField)
+            return signUpView.emailInput.placeholderLabel
         case signUpView.passwordInput.textField:
-            return (signUpView.passwordInput.placeholderLabel, signUpView.passwordInput.textField)
+            return signUpView.passwordInput.placeholderLabel
         case signUpView.confirmPasswordInput.textField:
-            return (signUpView.confirmPasswordInput.placeholderLabel, signUpView.confirmPasswordInput.textField)
+            return signUpView.confirmPasswordInput.placeholderLabel
         default:
             return nil
         }
     }
     
     private func updatePlaceholder(for textField: UITextField) {
-        guard let (placeholder, input) = textFieldPlaceholderPair(for: textField) else { return }
+        guard let placeholder = getPlaceholder(for: textField) else { return }
         
         let isEmpty = textField.text?.isEmpty ?? true
         let shouldMoveUp = textField.isFirstResponder || !isEmpty
         
         UIView.animate(withDuration: 0.25) {
-            placeholder.snp.updateConstraints {
-                $0.centerY.equalTo(input).offset(shouldMoveUp ? -15 : 0)
-            }
-            placeholder.font = .systemFont(ofSize: shouldMoveUp ? 12 : 16)
-            placeholder.superview?.layoutIfNeeded()
+            placeholder.transform = shouldMoveUp ? CGAffineTransform(translationX: -5, y: -15).scaledBy(x: 0.75, y: 0.75) : .identity
         }
     }
 }
