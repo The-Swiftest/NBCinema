@@ -42,7 +42,7 @@ final class FavoriteView: UIView {
     )
 
     private let runTimeStackView = SymbolLabelStackView(
-        symbol: UIImage(named: "clock") ?? UIImage(systemName: "xmark")!,
+        symbol: UIImage(named: "clockGray") ?? UIImage(systemName: "xmark")!,
         title: ""
     )
 
