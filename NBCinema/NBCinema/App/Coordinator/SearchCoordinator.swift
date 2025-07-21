@@ -23,14 +23,8 @@ class SearchCoordinator: BaseCoordinator {
     
     /// 검색 화면 표시
     private func showSearch() {
-        let searchVC = UIViewController()
-        searchVC.view.backgroundColor = .systemYellow
-        searchVC.title = "검색"
-        
-        //  API 테스트
-//        Task {
-//            await testSearchFeatures()
-//        }
+        let searchVC = SearchViewController(repository: movieRepository)
+        searchVC.coordinator = self
         navigationController.setViewControllers([searchVC], animated: false)
     }
     
@@ -42,35 +36,5 @@ class SearchCoordinator: BaseCoordinator {
         movieDetailVC.title = "영화 상세 (검색에서)"
         
         navigationController.pushViewController(movieDetailVC, animated: true)
-    }
-}
-
-extension SearchCoordinator {
-    private func testSearchFeatures() async {
-        print("\n🔍 검색 화면 - API 테스트")
-        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-        
-        // 1. 장르 목록 로드 테스트
-        do {
-            let genres = try await movieRepository.fetchGenres()
-            print("✅ 장르 버튼용 데이터 로드 성공: \(genres.count)개")
-            
-            // 장르별 영화 개수 확인
-            for genre in genres.prefix(3) {
-                let movies = try await movieRepository.fetchMoviesByGenre(genreId: genre.id)
-                print("   🎭 \(genre.name): \(movies.count)개 영화")
-            }
-            
-        } catch {
-            print("❌ 검색 화면 데이터 로드 실패: \(error)")
-        }
-        
-        // 2. 빈 검색어 테스트
-        do {
-            let emptyResult = try await movieRepository.searchMovies(query: "")
-            print("✅ 빈 검색어 처리: \(emptyResult.count)개 결과")
-        } catch {
-            print("❌ 빈 검색어 처리 실패: \(error)")
-        }
     }
 }
