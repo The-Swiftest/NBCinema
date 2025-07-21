@@ -21,7 +21,7 @@ extension Date {
     }
 
     /// Date를 "수" 이런 식으로 무슨 요일인지 문자열로 변환
-    func toDayofWeekString() -> String {
+    func toDayOfWeekString() -> String {
         let formatter = DateFormatter()
         
         formatter.dateFormat = "EEE"
