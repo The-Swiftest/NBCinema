@@ -34,8 +34,11 @@ final class CountView: UIView {
     var count = 0 {
         didSet {
             countLabel.text = "\(count)"
+            onCountChanged?(count)
         }
     }
+
+    var onCountChanged: ((Int) -> Void)?
 
     // MARK: - Initializers
 
@@ -81,11 +84,13 @@ final class CountView: UIView {
 
     @objc private func plusButtonTapped() {
         count += 1
+        onCountChanged?(count)
     }
     
     @objc private func minusButtonTapped() {
         if count > 0 {
             count -= 1
+            onCountChanged?(count)
         }
     }
 }

@@ -10,7 +10,7 @@ import Foundation
 import RealmSwift
 import UIKit
 
-class UserActivityService {
+class UserActivityService: UserActivityRepository {
 	// 예매 내역 정보 저장
 	func saveReservationDetails(data: ReservationDetail) throws {
 		do {
