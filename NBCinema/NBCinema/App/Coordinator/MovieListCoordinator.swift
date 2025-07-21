@@ -26,15 +26,7 @@ class MovieListCoordinator: BaseCoordinator {
     
     /// 영화목록 화면 표시
     private func showMovieList() {
-        let movieListVC = UIViewController()
-        movieListVC.view.backgroundColor = .systemRed
-        movieListVC.title = "영화목록"
-        
-        //  API 테스트
-//        Task {
-//            await testAllRepositoryMethods()
-//        }
-        
+        let movieListVC = MovieListViewController(repository: movieRepository)
         navigationController.setViewControllers([movieListVC], animated: false)
     }
     

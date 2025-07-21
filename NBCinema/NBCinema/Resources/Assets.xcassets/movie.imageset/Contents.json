@@ -6,10 +6,12 @@
       "scale" : "1x"
     },
     {
+      "filename" : "bx_camera-movie@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "bx_camera-movie@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
