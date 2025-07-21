@@ -102,20 +102,18 @@ final class MovieDetailViewModel: ViewModelProtocol {
                 // 찜 해제
                 try userActivityService.deleteFavorite(movieTitle: movieDetail.title)
                 state.isFavorite = false
-                print("🔖 찜 해제됨: \(movieDetail.title)")
             } else {
                 // 찜하기
                 let favoriteMovie = FavoriteMovie(
                     movieTitle: movieDetail.title,
                     runtime: movieDetail.runtime,
-                    genres: movieDetail.genres
+                    genres: movieDetail.genres,
+                    posterPath: movieDetail.posterURL?.absoluteString ?? ""
                 )
                 try userActivityService.saveFavorite(data: favoriteMovie)
                 state.isFavorite = true
-                print("🔖 찜하기 완료: \(movieDetail.title)")
             }
         } catch {
-            print("찜하기 처리 실패: \(error)")
             onError?(error)
         }
     }
