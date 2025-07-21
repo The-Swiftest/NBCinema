@@ -24,6 +24,8 @@ final class NbcInputField: UIView {
         $0.borderStyle = .none
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 10
+        $0.textColor = .black
+        $0.tintColor = .nbcMain
         $0.font = .systemFont(ofSize: 16, weight: .regular)
         $0.layer.borderWidth = 1
         $0.layer.borderColor = UIColor.white.cgColor
