@@ -33,4 +33,28 @@ class UserActivityService {
 			throw error
 		}
 	}
+
+    /// 찜하기 저장
+    func saveFavorite(data: FavoriteMovie) throws {
+        do {
+            let realm = try Realm()
+            try realm.write {
+                realm.add(data)
+            }
+        } catch {
+            print("Error new, save realm \(error)")
+            throw error
+        }
+    }
+
+    /// 찜하기 내역 정보 가져오기
+    func readFavorites() throws -> [FavoriteMovie] {
+        do {
+            let realm = try Realm()
+            return Array(realm.objects(FavoriteMovie.self))
+        } catch {
+            print("Error new realm \(error)")
+            throw error
+        }
+    }
 }
