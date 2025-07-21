@@ -9,11 +9,14 @@ import Foundation
 
 class MyPageViewModel: ViewModelProtocol {
     enum Action {
-        case fetchData
+        case fetchReservationData
+        case fetchFavoriteData
+        case deleteFavorite(movieTitle: String)
     }
 
     struct State {
         var reservationData: [ReservationDetail]
+        var favoriteData: [FavoriteMovie]
     }
 
     // state
@@ -24,7 +27,10 @@ class MyPageViewModel: ViewModelProtocol {
     }
 
     init() {
-        self.state = State(reservationData: [ReservationDetail]())
+        self.state = State(
+            reservationData: [ReservationDetail](),
+            favoriteData: [FavoriteMovie]()
+        )
     }
 
     private let userActivityService = UserActivityService()
@@ -36,8 +42,12 @@ class MyPageViewModel: ViewModelProtocol {
     func action(_ action: Action) {
         do {
             switch action {
-            case .fetchData:
-                try fetchData()
+            case .fetchReservationData:
+                try fetchReservationData()
+            case .fetchFavoriteData:
+                try fetchFavoriteData()
+            case .deleteFavorite(let movieTitle):
+                try deleteFavorite(movieTitle: movieTitle)
             }
         } catch {
             print(error)
@@ -45,7 +55,16 @@ class MyPageViewModel: ViewModelProtocol {
         }
     }
 
-    private func fetchData() throws {
+    private func deleteFavorite(movieTitle: String) throws {
+        do {
+            try userActivityService.deleteFavorite(movieTitle: movieTitle)
+            try fetchFavoriteData() // 삭제 후 데이터 다시 로드
+        } catch {
+            throw error
+        }
+    }
+
+    private func fetchReservationData() throws {
         do {
             state.reservationData = try userActivityService.readReservationDetails()
         } catch {
@@ -55,5 +74,17 @@ class MyPageViewModel: ViewModelProtocol {
 
     func getReservationData() -> [ReservationDetail] {
         return state.reservationData
+    }
+
+    private func fetchFavoriteData() throws {
+        do {
+            state.favoriteData = try userActivityService.readFavorites()
+        } catch {
+            throw error
+        }
+    }
+
+    func getFavoriteData() -> [FavoriteMovie] {
+        return state.favoriteData
     }
 }

@@ -19,7 +19,7 @@ class MyPageViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.isNavigationBarHidden = true
-        refreshReservations()
+        refreshDatas()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -30,15 +30,21 @@ class MyPageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         myPageView.logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
-        myPageView.reservationsMoreButton.addTarget(self, action: #selector(reservationMoreTapped), for: .touchUpInside)
+        myPageView.favoriteMoreButton.addTarget(self, action: #selector(favoriteMoreTapped), for: .touchUpInside)
+        myPageView.favoriteTrashButtonTapped = { [weak self] movieTitle in
+            self?.myPageViewModel.action(.deleteFavorite(movieTitle: movieTitle))
+            self?.refreshDatas()
+        }
     }
 
-    private func refreshReservations() {
+    private func refreshDatas() {
         var reservationData = [ReservationDetail]()
+        var favoriteData = [FavoriteMovie]()
 
+        // reservationData 요청 설정
         myPageViewModel.onStateChanged = { state in
             for (idx, item) in state.reservationData.enumerated() {
-                if idx < 4 {
+                if idx < 2 {
                     reservationData.append(item)
                 } else {
                     break
@@ -46,6 +52,7 @@ class MyPageViewController: UIViewController {
             }
         }
 
+        // 에러 설정
         myPageViewModel.onError = { [weak self] error in
             print(error)
             let alert = UIAlertController(
@@ -57,8 +64,26 @@ class MyPageViewController: UIViewController {
             self?.coordinator?.showErrorAlert(alert: alert)
         }
 
-        myPageViewModel.action(.fetchData)
+        // 데이터 요청
+        myPageViewModel.action(.fetchReservationData)
+
+        // favorite 데이터 요청 설정
+        myPageViewModel.onStateChanged = { state in
+            for (idx, item) in state.favoriteData.enumerated() {
+                if idx < 2 {
+                    favoriteData.append(item)
+                } else {
+                    break
+                }
+            }
+        }
+
+        // 데이터 요청
+        myPageViewModel.action(.fetchFavoriteData)
+
+        // 뷰 생성
         myPageView.makeReservationView(items: reservationData)
+        myPageView.makeFavoriteView(items: favoriteData)
     }
 }
 
@@ -74,6 +99,11 @@ extension MyPageViewController {
     @objc private func reservationMoreTapped() {
         coordinator?.showBookingHistory(
             reservationData: self.myPageViewModel.getReservationData())
+    }
+
+    @objc private func favoriteMoreTapped() {
+        coordinator?.showFavoriteMovies(
+            favoriteData: self.myPageViewModel.getFavoriteData())
     }
 }
 

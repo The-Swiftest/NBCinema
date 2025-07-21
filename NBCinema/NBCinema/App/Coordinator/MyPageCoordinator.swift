@@ -34,12 +34,9 @@ class MyPageCoordinator: BaseCoordinator {
     }
     
     /// 찜한 영화 목록 화면으로 이동
-    func showFavoriteMovies() {
-        // TODO: FavoriteMoviesViewController 구현 후 연결
-        let favoriteVC = UIViewController() // 임시 ViewController
-        favoriteVC.view.backgroundColor = .systemPink
-        favoriteVC.title = "찜한 영화"
-        
+    func showFavoriteMovies(favoriteData: [FavoriteMovie]) {
+        let favoriteVC = FavoriteListViewController(favoriteData: favoriteData)
+        favoriteVC.coordinator = self
         navigationController.pushViewController(favoriteVC, animated: true)
     }
 
