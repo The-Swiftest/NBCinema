@@ -11,6 +11,17 @@ class ReserveViewController: UIViewController {
     //weak var coordinator: ReserveCoodinator?
     private let reserveView = ReserveView()
 
+    private let id: Int
+
+    init(id: Int) {
+        self.id = id
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - Lifecycle
 
     override func loadView() {
@@ -25,5 +36,5 @@ class ReserveViewController: UIViewController {
 
 @available(iOS 17.0, *)
 #Preview {
-    ReserveViewController()
+    ReserveViewController(id: 32)
 }
