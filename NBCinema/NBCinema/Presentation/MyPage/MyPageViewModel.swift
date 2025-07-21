@@ -52,6 +52,10 @@ class MyPageViewModel: ViewModelProtocol {
             throw error
         }
     }
+
+    func getReservationData() -> [ReservationDetail] {
+        return state.reservationData
+    }
 }
 
 protocol ViewModelProtocol {

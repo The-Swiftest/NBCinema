@@ -30,6 +30,7 @@ class MyPageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         myPageView.logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
+        myPageView.reservationsMoreButton.addTarget(self, action: #selector(reservationMoreTapped), for: .touchUpInside)
     }
 
     private func refreshReservations() {
@@ -68,6 +69,11 @@ extension MyPageViewController {
             return
         }
         coordinator!.delegate?.myPageCoordinatorDidLogout(coordinator!)
+    }
+
+    @objc private func reservationMoreTapped() {
+        coordinator?.showBookingHistory(
+            reservationData: self.myPageViewModel.getReservationData())
     }
 }
 
