@@ -38,6 +38,7 @@ class GenreTagListView: UIView {
         
         let button = UIButton(configuration: config).then {
             $0.layer.borderWidth = 1
+            $0.layer.borderColor = UIColor.borderDynamic.cgColor
             $0.layer.cornerRadius = 17
             $0.clipsToBounds = true
             $0.tag = genre.id
