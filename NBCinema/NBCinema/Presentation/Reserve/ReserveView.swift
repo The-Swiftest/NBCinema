@@ -10,6 +10,10 @@ import UIKit
 import SnapKit
 import Then
 
+protocol ReserveViewDelegate: AnyObject {
+    func reserveButtonTapped(inform: UserChoiceInform)
+}
+
 final class ReserveView: UIView {
 
     // MARK: - UI Components
@@ -55,9 +59,9 @@ final class ReserveView: UIView {
     private let dateSymbolLabelStackView = SymbolLabelStackView(
         symbol: UIImage(named: "calendarDark") ?? UIImage(systemName: "xmark")!,
         title: "날짜 선택").then {
-        $0.label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
-        $0.label.textColor = .black
-    }
+            $0.label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+            $0.label.textColor = .black
+        }
 
     private let dateStackView = UIStackView().then {
         $0.axis = .horizontal
@@ -73,7 +77,7 @@ final class ReserveView: UIView {
         title: "시간 선택").then {
             $0.label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
             $0.label.textColor = .black
-    }
+        }
 
     private let firstStackView = UIStackView().then {
         $0.axis = .horizontal
@@ -98,7 +102,7 @@ final class ReserveView: UIView {
         title: "인원 선택").then {
             $0.label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
             $0.label.textColor = .black
-    }
+        }
 
     private let adulteLabel = UILabel().then {
         $0.text = "성인"
@@ -112,11 +116,73 @@ final class ReserveView: UIView {
         $0.textColor = .black
     }
 
-    private let adultCountView = CountView()
+    private(set) lazy var adultCountView = CountView().then {
+        $0.onCountChanged = { [weak self] num in
+            self?.adultCount = num
+        }
+    }
 
-    private let youthCountView = CountView()
+    private(set) lazy var youthCountView = CountView().then {
+        $0.onCountChanged = { [weak self] num in
+            self?.youthCount = num
+        }
+    }
 
-    private let paymentButton = NbcButton(title: "결제하기")
+    private let paymentButton = NbcButton(title: "결제하기").then {
+        $0.isEnabled = false
+    }
+
+    private let totalAmountLabel = UILabel().then {
+        $0.text = "총 금액"
+        $0.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        $0.textColor = .black
+    }
+
+    private let totalAmountInformLabel = UILabel().then {
+        $0.text = "0원"
+        $0.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        $0.textColor = .nbcMain
+    }
+
+    // MARK: - Properties
+    weak var delegate: ReserveViewDelegate?
+
+    private var amount: Int = 0 {
+        didSet {
+            if selectedDate != nil && selectedTime != nil && amount != 0 {
+                paymentButton.isEnabled = true
+            }
+            totalAmountInformLabel.text = "\(amount.toCommaString())원"
+        }
+    }
+
+    private var selectedDate: Date? {
+        didSet {
+            if selectedDate != nil && selectedTime != nil && amount != 0 {
+                paymentButton.isEnabled = true
+            }
+        }
+    }
+
+    private var selectedTime: DateComponents?  {
+        didSet {
+            if selectedDate != nil && selectedTime != nil && amount != 0 {
+                paymentButton.isEnabled = true
+            }
+        }
+    }
+
+    private var adultCount: Int = 0 {
+        didSet {
+            amount = adultCount * 13000 + youthCount * 10000
+        }
+    }
+
+    private var youthCount: Int = 0 {
+        didSet {
+            amount = adultCount * 13000 + youthCount * 10000
+        }
+    }
 
     // MARK: - Initializers
 
@@ -129,31 +195,32 @@ final class ReserveView: UIView {
         makeReserveDateViews()
         makeReserveTimeViews(runTime: 120)
         posterImageView.loadImage(from: URL(string: "https://picsum.photos/id/1/100/150")!)
+        paymentButton.addTarget(self, action: #selector(tapReserveButton), for: .touchUpInside)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-// 좌석 구현 하면 적용
-//    // MARK: - Lifecycle
-//
-//    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-//        super.traitCollectionDidChange(previousTraitCollection)
-//
-//        /// 라이트/다크 모드 전환됨
-//        if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
-//            if traitCollection.userInterfaceStyle == .light {
-//                userChoiceView.snp.updateConstraints {
-//                    $0.top.equalTo(posterImageView.snp.bottom)
-//                }
-//            } else {
-//                userChoiceView.snp.updateConstraints {
-//                    $0.top.equalTo(posterImageView.snp.bottom).offset(42)
-//                }
-//            }
-//        }
-//    }
+    // 좌석 구현 하면 적용
+    //    // MARK: - Lifecycle
+    //
+    //    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    //        super.traitCollectionDidChange(previousTraitCollection)
+    //
+    //        /// 라이트/다크 모드 전환됨
+    //        if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+    //            if traitCollection.userInterfaceStyle == .light {
+    //                userChoiceView.snp.updateConstraints {
+    //                    $0.top.equalTo(posterImageView.snp.bottom)
+    //                }
+    //            } else {
+    //                userChoiceView.snp.updateConstraints {
+    //                    $0.top.equalTo(posterImageView.snp.bottom).offset(42)
+    //                }
+    //            }
+    //        }
+    //    }
 
     // MARK: - Setup Methods
     private func setHeaderUI() {
@@ -223,7 +290,9 @@ final class ReserveView: UIView {
          adultCountView,
          youthLabel,
          youthCountView,
-         paymentButton
+         paymentButton,
+         totalAmountLabel,
+         totalAmountInformLabel
         ].forEach {
             userChoiceView.addSubview($0)
         }
@@ -231,21 +300,21 @@ final class ReserveView: UIView {
         dateScrollView.addSubview(dateStackView)
 
         // 좌석 구현할 때, 사용
-//        if traitCollection.userInterfaceStyle == .dark {
-//            // 다크 모드일 때 처리
-//            userChoiceView.snp.makeConstraints {
-//                $0.top.equalTo(posterImageView.snp.bottom).offset(42)
-//                $0.leading.trailing.equalTo(self.safeAreaLayoutGuide)
-//                $0.bottom.equalToSuperview()
-//            }
-//        } else {
-//            // 라이트 모드일 때 처리
-//            userChoiceView.snp.makeConstraints {
-//                $0.top.equalTo(posterImageView.snp.bottom)
-//                $0.leading.trailing.equalTo(self.safeAreaLayoutGuide)
-//                $0.bottom.equalToSuperview()
-//            }
-//        }
+        //        if traitCollection.userInterfaceStyle == .dark {
+        //            // 다크 모드일 때 처리
+        //            userChoiceView.snp.makeConstraints {
+        //                $0.top.equalTo(posterImageView.snp.bottom).offset(42)
+        //                $0.leading.trailing.equalTo(self.safeAreaLayoutGuide)
+        //                $0.bottom.equalToSuperview()
+        //            }
+        //        } else {
+        //            // 라이트 모드일 때 처리
+        //            userChoiceView.snp.makeConstraints {
+        //                $0.top.equalTo(posterImageView.snp.bottom)
+        //                $0.leading.trailing.equalTo(self.safeAreaLayoutGuide)
+        //                $0.bottom.equalToSuperview()
+        //            }
+        //        }
 
         userChoiceView.snp.makeConstraints {
             $0.top.equalTo(posterImageView.snp.bottom).offset(23)
@@ -318,8 +387,18 @@ final class ReserveView: UIView {
             $0.height.equalTo(24)
         }
 
+        totalAmountLabel.snp.makeConstraints {
+            $0.top.equalTo(youthLabel.snp.bottom).offset(30)
+            $0.leading.equalTo(youthLabel)
+        }
+
+        totalAmountInformLabel.snp.makeConstraints {
+            $0.top.equalTo(totalAmountLabel)
+            $0.trailing.equalToSuperview().inset(25)
+        }
+
         paymentButton.snp.makeConstraints {
-            $0.top.equalTo(youthLabel.snp.bottom).offset(32)
+            $0.top.equalTo(totalAmountLabel.snp.bottom).offset(32)
             $0.bottom.equalToSuperview().inset(20)
             $0.leading.trailing.equalToSuperview().inset(25)
         }
@@ -355,6 +434,18 @@ final class ReserveView: UIView {
         }
     }
 
+    // MARK: - Methods
+
+    func configure(item: MovieDetail) {
+        DispatchQueue.main.async { [weak self] in
+            self?.posterImageView.loadImage(
+                from: item.posterURL ?? URL(string: "https://placehold.co/200x300")!)
+            self?.movieTitleLabel.text = item.title
+            self?.runtimeLabel.text = "\(item.runtime)분"
+            self?.genreLabel.text = item.genres.map(\.self.name).joined(separator: ", ")
+        }
+    }
+
     // MARK: - Actions
 
     @objc func dateTap(_ sender: UITapGestureRecognizer) {
@@ -366,7 +457,7 @@ final class ReserveView: UIView {
         view.isSelected.toggle()
 
         // 여기서 저장용 데이터의 년월일 등록해야함
-        print(view.reserveDate)
+        self.selectedDate = view.reserveDate
     }
 
     @objc func timeTap(_ sender: UITapGestureRecognizer) {
@@ -384,7 +475,21 @@ final class ReserveView: UIView {
 
         view.isSelected.toggle()
 
-        // 여기서 저장용 데이터의 년월일 등록해야함
-        print(view.reserveTime)
+        // 여기서 저장용 데이터의 시간 등록해야함
+        self.selectedTime = view.reserveTime
+    }
+
+    @objc func tapReserveButton() {
+        let calendar = Calendar.current
+        let day = calendar.startOfDay(for: selectedDate ?? Date())
+        let reservationTime = calendar
+            .date(byAdding: selectedTime ?? DateComponents(), to: day) ?? Date()
+        let inform = UserChoiceInform(
+            reservationTime: reservationTime,
+            numOfPeople: adultCount + youthCount,
+            amount: amount
+        )
+
+        delegate?.reserveButtonTapped(inform: inform)
     }
 }

@@ -32,7 +32,8 @@ final class ReserveTimeView: UIView {
     }
 
     private let seatLabel = UILabel().then {
-        let seatCount = "12"
+        let random = Int.random(in: 0...80)
+        let seatCount = "\(random)"
         let totalCount = "/80석"
         let attributedString = NSMutableAttributedString(string: seatCount + totalCount)
 
