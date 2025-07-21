@@ -441,7 +441,7 @@ final class ReserveView: UIView {
             self?.posterImageView.loadImage(
                 from: item.posterURL ?? URL(string: "https://placehold.co/200x300")!)
             self?.movieTitleLabel.text = item.title
-            self?.runtimeLabel.text = "\(item.runtime)분"
+            self?.runtimeLabel.text = "\(item.runtime.toTimeString())"
             self?.genreLabel.text = item.genres.map(\.self.name).joined(separator: ", ")
         }
     }
