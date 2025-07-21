@@ -7,7 +7,7 @@
 
 import Foundation
 
-class SignUpViewModel {
+class SignUpViewModel: ViewModelProtocol {
     enum Action {
         case emailChanged(String)
         case passwordChanged(String)
@@ -36,7 +36,6 @@ class SignUpViewModel {
     }
     
     var onStateChanged: ((State) -> Void)?
-    private let service = "NBCinema"            // 키체인 서비스 이름
     
     func action(_ action: Action) {
         switch action {
@@ -54,7 +53,7 @@ class SignUpViewModel {
             validateConfirmPassword()
             
         case .signUp:
-            state.isSignedUp = KeychainService.save(service: service, account: state.email, value: state.password)
+            state.isSignedUp = KeychainService.save(service: KeychainConstants.service, account: KeychainConstants.emailAccount, value: state.email) && KeychainService.save(service: KeychainConstants.service, account: KeychainConstants.passwordAccount, value: state.password)
         }
         
         updateSignUpEnabled()
@@ -64,7 +63,7 @@ class SignUpViewModel {
     private func validateEmail() {
         if state.email.isEmpty {
             state.emailError = "이메일을 입력해주세요."
-        } else if isValidEmail(state.email) {
+        } else if Validator.isValidEmail(state.email) {
             state.emailError = nil
         } else {
             state.emailError = "올바른 이메일 형식이 아닙니다."
@@ -75,7 +74,7 @@ class SignUpViewModel {
     private func validatePassword() {
         if state.password.isEmpty {
             state.passwordError = "비밀번호를 입력해주세요."
-        } else if isValidPassword(state.password) {
+        } else if Validator.isValidPassword(state.password) {
             state.passwordError = nil
         } else {
             state.passwordError = "영문 대소문자/숫자 8자 이상, 특수문자 1개 이상 포함"
@@ -102,17 +101,5 @@ class SignUpViewModel {
         !state.password.isEmpty &&
         !state.confirmPassword.isEmpty &&
         !state.email.isEmpty
-    }
-    
-    // 이메일 유효성 검사 (~~~@~~~.~~~)
-    private func isValidEmail(_ email: String) -> Bool {
-        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-        return NSPredicate(format:"SELF MATCHES %@", emailRegEx).evaluate(with: email)
-    }
-    
-    // 비멀번호 유효성 검사 (영어 대소문자, 숫자, 특수문자 8자 이상, 특수문자 1개 이상)
-    private func isValidPassword(_ password: String) -> Bool {
-        let regex = #"^(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$"#
-        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: password)
     }
 }
