@@ -57,7 +57,11 @@ class SignUpViewController: UIViewController {
     private func bindViewModel() {
         viewModel.onStateChanged = { [weak self] state in
             if state.isSignedUp {
-                self?.showAlert()
+                let termsVC = TermsViewController()
+                termsVC.onAgreeComplete = { [weak self] in
+                    self?.moveToLoginTapped()
+                }
+                self?.present(termsVC, animated: true)
             }
             
             self?.signUpView.emailInput.setError(state.emailError)
@@ -91,15 +95,6 @@ class SignUpViewController: UIViewController {
     // 회원가입 버튼 클릭 시 호출
     @objc private func signUpTapped() {
         viewModel.action(.signUp)
-    }
-    
-    // 회원가입 완료 시 Alert 표시 후 로그인 화면으로 이동
-    private func showAlert() {
-        let alert = UIAlertController(title: "완료", message: "화원 가입이 완료되었습니다.", preferredStyle: .alert)
-        alert.addAction(.init(title: "확인", style: .default) { [weak self] _ in
-            self?.moveToLoginTapped()
-        })
-        present(alert, animated: true)
     }
     
     // 로그인 화면으로 이동
