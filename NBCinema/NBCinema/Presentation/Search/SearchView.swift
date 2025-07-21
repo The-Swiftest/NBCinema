@@ -60,7 +60,7 @@ class SearchView: UIView {
         collectionViewLayout: createFlowLayout()
     ).then {
         $0.backgroundColor = .systemBackground
-        $0.register(MoviePosterCell.self, forCellWithReuseIdentifier: "MoviePosterCell")
+        $0.register(MoviePosterCell.self, forCellWithReuseIdentifier: MoviePosterCell.identifier)
         $0.register(SearchSectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SearchSectionHeaderView.reuseIdentifier)
         $0.isHidden = true
     }
