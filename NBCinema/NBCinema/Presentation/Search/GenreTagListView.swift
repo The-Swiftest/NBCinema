@@ -38,8 +38,6 @@ class GenreTagListView: UIView {
         
         let button = UIButton(configuration: config).then {
             $0.layer.borderWidth = 1
-            // 단축키로 다크모드 변경 시 반영 안됨
-            $0.layer.borderColor = UIColor.borderDynamic.cgColor
             $0.layer.cornerRadius = 17
             $0.clipsToBounds = true
             $0.tag = genre.id
@@ -91,5 +89,11 @@ class GenreTagListView: UIView {
         super.layoutSubviews()
         layoutButtons()
         invalidateIntrinsicContentSize()
+    }
+    
+    // 다크모드 전환 감지
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        genreButtonList.forEach { $0.layer.borderColor = UIColor.borderDynamic.cgColor }
     }
 }
