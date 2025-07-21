@@ -8,6 +8,7 @@
 import Foundation
 
 import RealmSwift
+import UIKit
 
 class UserActivityService {
 	// 예매 내역 정보 저장
@@ -46,6 +47,22 @@ class UserActivityService {
             throw error
         }
     }
+
+    /// 찜빼기
+    func deleteFavorite(movieTitle: String) throws {
+        do {
+            let realm = try Realm()
+            let favoritedMovie = realm.objects(FavoriteMovie.self).filter { $0.movieTitle == movieTitle }
+
+            try realm.write {
+                realm.delete(favoritedMovie)
+            }
+        } catch {
+            print("Error deleting object \(error)")
+            throw error
+        }
+    }
+
 
     /// 찜하기 내역 정보 가져오기
     func readFavorites() throws -> [FavoriteMovie] {
