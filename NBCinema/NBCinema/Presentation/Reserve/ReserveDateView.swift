@@ -51,7 +51,7 @@ final class ReserveDateView: UIView {
             dayOfWeekLabel.text = "내일"
             dayOfWeekLabel.textColor = .nbcMain
         } else {
-            dayOfWeekLabel.text = date.toDayofWeekString()
+            dayOfWeekLabel.text = date.toDayOfWeekString()
         }
 
         dayLabel.text = String(dayComponents.day ?? 0)
