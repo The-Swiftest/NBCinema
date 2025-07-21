@@ -21,19 +21,15 @@ class MyPageCoordinator: BaseCoordinator {
     
     /// 마이페이지 화면 표시
     private func showMyPage() {
-        // TODO: MyPageViewController 구현 후 연결
 		let myPageVC = MyPageViewController()
         myPageVC.coordinator = self
         navigationController.setViewControllers([myPageVC], animated: false)
     }
     
     /// 예매 내역 화면으로 이동
-    func showBookingHistory() {
-        // TODO: BookingHistoryViewController 구현 후 연결
-        let bookingHistoryVC = UIViewController() // 임시 ViewController
-        bookingHistoryVC.view.backgroundColor = .systemIndigo
-        bookingHistoryVC.title = "예매 내역"
-        
+    func showBookingHistory(reservationData: [ReservationDetail]) {
+        let bookingHistoryVC = ReserveListViewController(reservationData: reservationData)
+        bookingHistoryVC.coordinator = self
         navigationController.pushViewController(bookingHistoryVC, animated: true)
     }
     
