@@ -15,9 +15,11 @@ class MovieListViewController: UIViewController {
     
     typealias DataSource = UICollectionViewDiffableDataSource<MovieSection, Movie>
     typealias Snapshot = NSDiffableDataSourceSnapshot<MovieSection, Movie>
+
+    private lazy var dataSource = makeDataSource(collectionView: collectionView)
     
-    private var dataSource: DataSource?
-    private let repository: MovieRepository
+    private let viewModel: MovieListViewModel
+    private weak var coordinator: MovieListCoordinator?
     
     private var nowPlayingMovies: [Movie] = []
     private var popularMovies: [Movie] = []
@@ -38,10 +40,11 @@ class MovieListViewController: UIViewController {
     
     // MARK: - Initializers
     
-    init(repository: MovieRepository) {
-        self.repository = repository
-        super.init(nibName: nil, bundle: nil)
-    }
+    init(viewModel: MovieListViewModel, coordinator: MovieListCoordinator) {
+            self.viewModel = viewModel
+            self.coordinator = coordinator
+            super.init(nibName: nil, bundle: nil)
+        }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -52,8 +55,8 @@ class MovieListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        setupDataSource()
-        fetchMovies()
+        bindViewModel()
+        viewModel.action(.fetchMovies)
     }
     
     // MARK: - Setup Methods
@@ -78,7 +81,7 @@ class MovieListViewController: UIViewController {
         }
     }
     
-    func setupDataSource() {
+    func makeDataSource(collectionView: UICollectionView) -> DataSource {
         let rankingCellRegistration = UICollectionView.CellRegistration<MovieRankingCell, Movie> {
             cell, indexPath, movie in
             cell.configure(movie: movie, ranking: indexPath.item + 1)
@@ -96,7 +99,7 @@ class MovieListViewController: UIViewController {
             headerView.configure(title: section.title)
         }
         
-        dataSource = DataSource(collectionView: collectionView) {
+        let dataSource = DataSource(collectionView: collectionView) {
             collectionView, indexPath, movie in
             let section = MovieSection(rawValue: indexPath.section)!
             
@@ -112,7 +115,7 @@ class MovieListViewController: UIViewController {
             }
         }
         
-        dataSource?.supplementaryViewProvider = {
+        dataSource.supplementaryViewProvider = {
             collectionView, kind, indexPath in
             let section = MovieSection(rawValue: indexPath.section)!
             
@@ -123,47 +126,37 @@ class MovieListViewController: UIViewController {
             }
             return nil
         }
+        
+        return dataSource
     }
     
     // MARK: - Methods
     
-    private func fetchMovies() {
-        Task {
-            do {
-                async let nowPlaying = repository.fetchNowPlayingMovies()
-                async let popular = repository.fetchPopularMovies()
-                async let upcoming = repository.fetchUpcomingMovies()
-                async let topRated = repository.fetchTopRatedMovies()
-                
-                nowPlayingMovies = try await nowPlaying
-                popularMovies = try await popular
-                upcomingMovies = try await upcoming
-                topRatedMovies = try await topRated
-                
-                await MainActor.run {
-                    updateSnapShot()
-                }
-                
-            } catch {
-                await MainActor.run {
-                    print("❌ 영화 데이터 로드 실패: \(error)")
-                    // 에러 발생 시 빈 데이터로 스냅샷 적용
-                    updateSnapShot()
-                }
-            }
+    func bindViewModel() {
+        viewModel.onStateChanged = { [weak self] state in
+            self?.updateUI(state: state)
         }
     }
     
-    func updateSnapShot() {
+    func updateUI(state: MovieListViewModel.State) {
+        if let error = state.error {
+            print("❌ 영화 로드 실패: \(error)")
+            // TODO: showAlert coordinator에서 한번에 처리
+        }
+        
+        updateSnapShot(state: state)
+    }
+    
+    func updateSnapShot(state: MovieListViewModel.State) {
         var snapshot = Snapshot()
         snapshot.appendSections(MovieSection.allCases)
         
-        snapshot.appendItems(nowPlayingMovies, toSection: .nowPlaying)
-        snapshot.appendItems(popularMovies, toSection: .popular)
-        snapshot.appendItems(upcomingMovies, toSection: .upcoming)
-        snapshot.appendItems(topRatedMovies, toSection: .topRated)
+        snapshot.appendItems(state.nowPlayingMovies, toSection: .nowPlaying)
+        snapshot.appendItems(state.popularMovies, toSection: .popular)
+        snapshot.appendItems(state.upcomingMovies, toSection: .upcoming)
+        snapshot.appendItems(state.topRatedMovies, toSection: .topRated)
         
-        dataSource?.apply(snapshot, animatingDifferences: false)
+        dataSource.apply(snapshot, animatingDifferences: false)
     }
 }
 
@@ -171,6 +164,7 @@ class MovieListViewController: UIViewController {
 
 extension MovieListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("section: \(indexPath.section), item: \(indexPath.item)")
+        guard let movie = dataSource.itemIdentifier(for: indexPath) else { return }
+        coordinator?.showMovieDetail(movieId: movie.id)
     }
 }

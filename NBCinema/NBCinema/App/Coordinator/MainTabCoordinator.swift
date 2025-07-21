@@ -23,7 +23,6 @@ class MainTabCoordinator: BaseCoordinator {
     private func setUPTabBar() {
         let tabBarController = CustomTabBarController()
         
-        // TODO: 추후 MovieRepository로 교체
         let movieRepository: MovieRepository = NetworkMovieRepository()
         
         // 영화목록 탭
