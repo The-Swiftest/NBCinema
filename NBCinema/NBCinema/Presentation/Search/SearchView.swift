@@ -136,13 +136,20 @@ class SearchView: UIView {
     }
     
     // 추천 장르 뷰와 검색 결과 뷰 toggle
-    func setHiddenGenreStackView(_ isHidden: Bool) {
+    private func setHiddenGenreStackView(_ isHidden: Bool) {
         genreStackView.isHidden = isHidden
         collectionView.isHidden = !isHidden
     }
     
     // 검색 결과가 비었을 때 emptyLabel 표시
-    func updateCollectionViewBackground(isEmpty: Bool) {
+    private func updateCollectionViewBackground(isEmpty: Bool) {
         collectionView.backgroundView = isEmpty ? emptyLabel : nil
+    }
+    
+    func configure(_ state: SearchViewModel.State) {
+        genreTagView.configure(genreList: state.genres)
+        searchBar.text = state.keyword
+        setHiddenGenreStackView(!state.isSearchEmpty)
+        updateCollectionViewBackground(isEmpty: !state.keyword.isEmpty && state.movies.isEmpty)
     }
 }

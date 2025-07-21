@@ -49,11 +49,8 @@ class SearchViewController: UIViewController {
     private func bindViewModel() {
         viewModel.onStateChanged = { [weak self] state in
             DispatchQueue.main.async {
-                self?.searchView.genreTagView.configure(genreList: state.genres)
-                self?.searchView.searchBar.text = state.keyword
-                self?.searchView.setHiddenGenreStackView(!state.isSearchEmpty)
+                self?.searchView.configure(state)
                 self?.searchView.collectionView.reloadData()
-                self?.searchView.updateCollectionViewBackground(isEmpty: !state.keyword.isEmpty && state.movies.isEmpty)
             }
         }
     }
