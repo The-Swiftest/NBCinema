@@ -41,13 +41,13 @@ final class ReserveView: UIView {
     private let genreLabel = UILabel().then {
         $0.text = "장르"
         $0.font = .systemFont(ofSize: 14)
-        $0.tintColor = .gray3
+        $0.textColor = .gray3
     }
 
     private let runtimeLabel = UILabel().then {
         $0.text = "0시간 00분"
         $0.font = .systemFont(ofSize: 14)
-        $0.tintColor = .gray3
+        $0.textColor = .gray3
     }
 
     private let userChoiceView = UIView().then {
