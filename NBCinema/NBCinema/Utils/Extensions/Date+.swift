@@ -31,16 +31,4 @@ extension Date {
         
         return str
     }
-
-    /// Date를 "17" 이런 식으로 몇 일인지 문자열로 변환
-    func toDayString() -> String {
-        let formatter = DateFormatter()
-
-        formatter.dateFormat = "dd"
-        formatter.locale = Locale(identifier: "ko_KR")
-
-        let str = formatter.string(from: self)
-
-        return str
-    }
 }

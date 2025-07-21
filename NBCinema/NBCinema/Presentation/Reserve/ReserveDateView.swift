@@ -40,20 +40,21 @@ final class ReserveDateView: UIView {
     // MARK: - Initializers
 
     init(date: Date) {
-        let dayString = date.toDayString()
-        let todayString = Date().toDayString()
+        let calendar = Calendar.current
+        let dayComponents = calendar.dateComponents([.day], from: date)
+        let todayComponents = calendar.dateComponents([.day], from: Date())
 
-        if dayString == todayString {
+        if dayComponents == todayComponents {
             dayOfWeekLabel.text = "오늘"
             dayOfWeekLabel.textColor = .nbcMain
-        } else if (Int(dayString) ?? -1) == (Int(todayString) ?? -1) + 1 {
+        } else if dayComponents.day == (todayComponents.day ?? 0) + 1 {
             dayOfWeekLabel.text = "내일"
             dayOfWeekLabel.textColor = .nbcMain
         } else {
             dayOfWeekLabel.text = date.toDayofWeekString()
         }
 
-        dayLabel.text = dayString
+        dayLabel.text = String(dayComponents.day ?? 0)
         self.reserveDate = date
         super.init(frame: .zero)
         setUI()
