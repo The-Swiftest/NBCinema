@@ -13,9 +13,9 @@ class MovieListViewController: UIViewController {
     
     // MARK: - Properties
     
-    typealias DataSource = UICollectionViewDiffableDataSource<MovieSection, Movie>
-    typealias Snapshot = NSDiffableDataSourceSnapshot<MovieSection, Movie>
-
+    typealias DataSource = UICollectionViewDiffableDataSource<MovieSection, MovieItem>
+    typealias Snapshot = NSDiffableDataSourceSnapshot<MovieSection, MovieItem>
+    
     private lazy var dataSource = makeDataSource(collectionView: collectionView)
     
     private let viewModel: MovieListViewModel
@@ -41,10 +41,10 @@ class MovieListViewController: UIViewController {
     // MARK: - Initializers
     
     init(viewModel: MovieListViewModel, coordinator: MovieListCoordinator) {
-            self.viewModel = viewModel
-            self.coordinator = coordinator
-            super.init(nibName: nil, bundle: nil)
-        }
+        self.viewModel = viewModel
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -82,14 +82,14 @@ class MovieListViewController: UIViewController {
     }
     
     func makeDataSource(collectionView: UICollectionView) -> DataSource {
-        let rankingCellRegistration = UICollectionView.CellRegistration<MovieRankingCell, Movie> {
-            cell, indexPath, movie in
-            cell.configure(movie: movie, ranking: indexPath.item + 1)
+        let rankingCellRegistration = UICollectionView.CellRegistration<MovieRankingCell, MovieItem> {
+            cell, indexPath, movieItem in
+            cell.configure(movie: movieItem.movie, ranking: indexPath.item + 1)
         }
         
-        let posterCellRegistration = UICollectionView.CellRegistration<MoviePosterCell, Movie> {
-            cell, indexPath, movie in
-            cell.configure(movie: movie)
+        let posterCellRegistration = UICollectionView.CellRegistration<MoviePosterCell, MovieItem> {
+            cell, indexPath, movieItem in
+            cell.configure(movie: movieItem.movie)
         }
         
         let headerRegistration = UICollectionView.SupplementaryRegistration<MovieSectionHeaderView>(
@@ -151,10 +151,23 @@ class MovieListViewController: UIViewController {
         var snapshot = Snapshot()
         snapshot.appendSections(MovieSection.allCases)
         
-        snapshot.appendItems(state.nowPlayingMovies, toSection: .nowPlaying)
-        snapshot.appendItems(state.popularMovies, toSection: .popular)
-        snapshot.appendItems(state.upcomingMovies, toSection: .upcoming)
-        snapshot.appendItems(state.topRatedMovies, toSection: .topRated)
+        let nowPlayingItems = state.nowPlayingMovies.map {
+            MovieItem(movie: $0, section: .nowPlaying)
+        }
+        let popularItems = state.popularMovies.map {
+            MovieItem(movie: $0, section: .popular)
+        }
+        let upcomingItems = state.upcomingMovies.map {
+            MovieItem(movie: $0, section: .upcoming)
+        }
+        let topRatedItems = state.topRatedMovies.map {
+            MovieItem(movie: $0, section: .topRated)
+        }
+        
+        snapshot.appendItems(nowPlayingItems, toSection: .nowPlaying)
+        snapshot.appendItems(popularItems, toSection: .popular)
+        snapshot.appendItems(upcomingItems, toSection: .upcoming)
+        snapshot.appendItems(topRatedItems, toSection: .topRated)
         
         dataSource.apply(snapshot, animatingDifferences: false)
     }
@@ -164,7 +177,7 @@ class MovieListViewController: UIViewController {
 
 extension MovieListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let movie = dataSource.itemIdentifier(for: indexPath) else { return }
-        coordinator?.showMovieDetail(movieId: movie.id)
+        guard let movieItem = dataSource.itemIdentifier(for: indexPath) else { return }
+        coordinator?.showMovieDetail(movieId: movieItem.movie.id)
     }
 }
