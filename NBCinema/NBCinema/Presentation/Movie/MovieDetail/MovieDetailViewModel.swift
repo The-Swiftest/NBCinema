@@ -8,7 +8,7 @@
 import Foundation
 
 enum MovieDetailAction {
-    case viewDidLoad(movieId: Int)
+    case fetchMovieDetail(movieId: Int)
     case favoriteButtonTapped
 }
 
@@ -17,7 +17,6 @@ struct MovieDetailState {
     var director: String?
     var cast: [String] = []
     var isFavorite: Bool = false
-    var error: Error?
 }
 
 final class MovieDetailViewModel: ViewModelProtocol {
@@ -32,6 +31,7 @@ final class MovieDetailViewModel: ViewModelProtocol {
     }
     
     var onStateChanged: ((State) -> Void)?
+    var onError: ((Error) -> Void)?
     
     private let repository: MovieRepository
     private let userActivityService = UserActivityService()
@@ -43,7 +43,7 @@ final class MovieDetailViewModel: ViewModelProtocol {
     
     func action(_ action: MovieDetailAction) {
         switch action {
-        case .viewDidLoad(let movieId):
+        case .fetchMovieDetail(let movieId):
             currentMovieId = movieId
             fetchMovieDetail(movieId: movieId)
             
@@ -58,8 +58,6 @@ final class MovieDetailViewModel: ViewModelProtocol {
     }
     
     private func fetchMovieDetail(movieId: Int) {
-        state.error = nil
-        
         Task {
             do {
                 async let movieDetail = repository.fetchMovieDetail(id: movieId)
@@ -77,7 +75,7 @@ final class MovieDetailViewModel: ViewModelProtocol {
                 }
             } catch {
                 await MainActor.run {
-                    state.error = error
+                    onError?(error)
                 }
             }
         }
@@ -92,7 +90,7 @@ final class MovieDetailViewModel: ViewModelProtocol {
                 return favorite.movieTitle == movieDetail.title
             }
         } catch {
-            print("찜 상태 확인 실패: \(error)")
+            onError?(error)
         }
     }
     
@@ -118,7 +116,7 @@ final class MovieDetailViewModel: ViewModelProtocol {
             }
         } catch {
             print("찜하기 처리 실패: \(error)")
-            state.error = error
+            onError?(error)
         }
     }
 }

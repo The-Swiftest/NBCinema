@@ -43,4 +43,16 @@ class BaseCoordinator: Coordinator {
     func removeChildCoordinator(_ coordinator: Coordinator) {
         childCoordinators = childCoordinators.filter { $0 !== coordinator }
     }
+    
+    /// 공통 Error Alert
+    func showErrorAlert(title: String = "오류", message: String, completion: (() -> Void)? = nil) {
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in
+                completion?()
+            })
+            
+            DispatchQueue.main.async { [weak self] in
+                self?.navigationController.present(alert, animated: true)
+            }
+        }
 }
