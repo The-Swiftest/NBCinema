@@ -10,12 +10,12 @@ import UIKit
 class MovieDetailCoordinator: BaseCoordinator {
     private let movieRepository: MovieRepository
     private let movieId: Int
-    private weak var parentCoordinator: MovieListCoordinator?
+    private weak var parentCoordinator: BaseCoordinator?
     
     init(navigationController: UINavigationController,
          movieRepository: MovieRepository,
          movieId: Int,
-         parentCoordinator: MovieListCoordinator? = nil) {
+         parentCoordinator: BaseCoordinator? = nil) {
         self.movieRepository = movieRepository
         self.movieId = movieId
         self.parentCoordinator = parentCoordinator
