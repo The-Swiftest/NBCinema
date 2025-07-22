@@ -16,7 +16,6 @@ struct MovieListState {
     var popularMovies: [Movie] = []
     var upcomingMovies: [Movie] = []
     var topRatedMovies: [Movie] = []
-    var error: Error?
 }
 
 class MovieListViewModel: ViewModelProtocol {
@@ -31,6 +30,7 @@ class MovieListViewModel: ViewModelProtocol {
     }
     
     var onStateChanged: ((State) -> Void)?
+    var onError: ((Error) -> Void)?
     
     private let repository: MovieRepository
     
@@ -70,7 +70,7 @@ class MovieListViewModel: ViewModelProtocol {
                 
             } catch {
                 await MainActor.run {
-                    state.error = error
+                    onError?(error)
                 }
             }
         }

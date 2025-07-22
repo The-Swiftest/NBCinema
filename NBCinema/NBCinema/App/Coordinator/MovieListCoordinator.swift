@@ -9,9 +9,6 @@ import UIKit
 
 /// 영화목록 화면들을 관리하는 Coordinator
 class MovieListCoordinator: BaseCoordinator {
-    // MARK: - 테스트용 프로퍼티
-    private var testGenres: [Genre]?
-    private var testMovieId: Int?
     
     private let movieRepository: MovieRepository
     
@@ -31,12 +28,23 @@ class MovieListCoordinator: BaseCoordinator {
         navigationController.setViewControllers([movieListVC], animated: false)
     }
     
-    // 영화 상세 화면으로 이동 (나중에 구현)
-    func showMovieDetail(movieId: Int) {
-        let movieDetailVC = UIViewController()
-        movieDetailVC.view.backgroundColor = .systemPurple
-        movieDetailVC.title = "영화 상세"
-        print("영화 예매 화면 이동: \(movieId)")
-        navigationController.pushViewController(movieDetailVC, animated: true)
-    }
+    func showError(_ error: Error) {
+            showErrorAlert(title: "영화 로드 실패", message: error.localizedDescription)
+        }
+    
+    /// 영화 상세 화면으로 이동
+        func showMovieDetail(movieId: Int) {
+            let movieDetailCoordinator = MovieDetailCoordinator(
+                navigationController: navigationController,
+                movieRepository: movieRepository,
+                movieId: movieId,
+                parentCoordinator: self
+            )
+            
+            // 자식 coordinator로 추가
+            addChildCoordinator(movieDetailCoordinator)
+            
+            // coordinator 시작
+            movieDetailCoordinator.start()
+        }
 }

@@ -134,17 +134,14 @@ class MovieListViewController: UIViewController {
     
     func bindViewModel() {
         viewModel.onStateChanged = { [weak self] state in
-            self?.updateUI(state: state)
-        }
-    }
-    
-    func updateUI(state: MovieListViewModel.State) {
-        if let error = state.error {
-            print("❌ 영화 로드 실패: \(error)")
-            // TODO: showAlert coordinator에서 한번에 처리
+            self?.updateSnapShot(state: state)
         }
         
-        updateSnapShot(state: state)
+        viewModel.onError = { [weak self] error in
+                DispatchQueue.main.async {
+                    self?.coordinator?.showError(error)
+                }
+            }
     }
     
     func updateSnapShot(state: MovieListViewModel.State) {
