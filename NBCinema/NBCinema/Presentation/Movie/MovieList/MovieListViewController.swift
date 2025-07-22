@@ -77,7 +77,7 @@ class MovieListViewController: UIViewController {
         collectionView.snp.makeConstraints {
             $0.top.equalTo(headerView.snp.bottom)
             $0.horizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalTo(view.safeAreaLayoutGuide).offset(20)
         }
     }
     
