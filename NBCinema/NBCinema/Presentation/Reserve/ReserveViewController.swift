@@ -8,7 +8,7 @@
 import UIKit
 
 class ReserveViewController: UIViewController {
-    //weak var coordinator: ReserveCoodinator?
+    weak var coordinator: BaseCoordinator?
     private let reserveView = ReserveView()
     private let reserveViewModel = ReserveViewModel(
         movieService: NetworkMovieRepository(),
@@ -34,10 +34,24 @@ class ReserveViewController: UIViewController {
 
     override func viewDidLoad() {
         self.navigationController?.isNavigationBarHidden = true
-        tabBarController?.tabBar.isHidden = true
         bindingData()
         reserveViewModel.action(.fetchData(id: id))
         reserveView.delegate = self
+        reserveView.headerView.backButton.addTarget(self,
+                                                    action: #selector(backButtonTapped),
+                                                    for: .touchUpInside
+        )
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        tabBarController?.tabBar.isHidden = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        tabBarController?.tabBar.isHidden = false
     }
 
     private func bindingData() {
@@ -52,7 +66,23 @@ class ReserveViewController: UIViewController {
 
 extension ReserveViewController: ReserveViewDelegate {
     func reserveButtonTapped(inform: UserChoiceInform) {
-        reserveViewModel.action(.saveData(inform))
+        let alertMessage = reserveView.getMovieInfoString() + "\n\n결제하겠습니까?"
+        let alert = UIAlertController(title: "결제 확인", message: alertMessage, preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: "예", style: .default) { [weak self] action in
+            self?.reserveViewModel.action(.saveData(inform))
+            self?.coordinator?.navigationController.popViewController(animated: true)
+        }
+        let cancelAction = UIAlertAction(title: "아니요", style: .cancel) { action in
+
+        }
+        alert.addAction(confirmAction)
+        alert.addAction(cancelAction)
+
+        coordinator?.showAnyAlert(alert)
+    }
+
+    @objc func backButtonTapped() {
+        coordinator?.navigationController.popViewController(animated: true)
     }
 }
 
