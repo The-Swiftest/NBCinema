@@ -26,7 +26,8 @@ class MyPageView: UIView {
 
     let nameLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 20, weight: .bold)
-        $0.text = "example@mail.com님"
+        $0.text = (KeychainService.load(service: KeychainConstants.service,
+                                        account: KeychainConstants.emailAccount) ?? "사용자") + "님"
     }
 
     let logoutButton = UIButton().then {
@@ -60,6 +61,31 @@ class MyPageView: UIView {
         $0.spacing = 15
     }
 
+    let favoriteLabel = UILabel().then {
+        $0.font = .systemFont(ofSize: 24, weight: .bold)
+        $0.text = "찜한 영화"
+    }
+
+    let favoriteMoreButton = UIButton().then {
+        var config = UIButton.Configuration.plain()
+        config.imagePlacement = .trailing
+
+        var attr = AttributeContainer()
+        attr.font = .systemFont(ofSize: 16, weight: .bold)
+
+        config.attributedTitle = AttributedString("더보기", attributes: attr)
+        config.baseForegroundColor = .gray2
+        $0.setImage(UIImage(named: "rightArrow"), for: .normal)
+        $0.configuration = config
+    }
+
+    private let favoriteStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 15
+    }
+
+    var favoriteTrashButtonTapped: ((String) -> Void)?
+
     private let contentView = UIView()
 
     override init(frame: CGRect) {
@@ -83,7 +109,10 @@ class MyPageView: UIView {
          logoutButton,
          reservationsLabel,
          reservationsMoreButton,
-         reservationStackView].forEach {
+         reservationStackView,
+         favoriteLabel,
+         favoriteMoreButton,
+         favoriteStackView].forEach {
             contentView.addSubview($0)
         }
 
@@ -133,8 +162,22 @@ class MyPageView: UIView {
 
         reservationStackView.snp.makeConstraints {
             $0.top.equalTo(reservationsLabel.snp.bottom).offset(15)
-            $0.leading.equalToSuperview().offset(20)
-            $0.bottom.trailing.equalToSuperview().inset(20)
+            $0.leading.trailing.equalToSuperview().inset(20)
+        }
+
+        favoriteLabel.snp.makeConstraints {
+            $0.top.equalTo(reservationStackView.snp.bottom).offset(30)
+            $0.leading.equalTo(contentView).offset(20)
+        }
+
+        favoriteMoreButton.snp.makeConstraints {
+            $0.top.equalTo(favoriteLabel)
+            $0.trailing.equalTo(contentView).inset(20)
+        }
+
+        favoriteStackView.snp.makeConstraints {
+            $0.top.equalTo(favoriteLabel.snp.bottom).offset(15)
+            $0.leading.bottom.trailing.equalToSuperview().inset(20)
         }
     }
 
@@ -163,6 +206,38 @@ class MyPageView: UIView {
                 let reservationView = ReservationView()
                 reservationView.configure(with: item)
                 self.reservationStackView.addArrangedSubview(reservationView)
+            }
+        }
+    }
+
+    func makeFavoriteView(items: [FavoriteMovie]) {
+        /// 먼저 있는 찜한 내역 삭제
+        favoriteStackView.arrangedSubviews.forEach { view in
+            view.removeFromSuperview()
+        }
+
+        /// 새로운 찜한 내역이 없는 경우 label 추가
+        if items.isEmpty {
+            let emptyLabel = UILabel().then {
+                $0.text = "찜한 영화가 없습니다."
+                $0.font = .systemFont(ofSize: 14)
+                $0.textColor = .gray3
+                $0.textAlignment = .center
+            }
+            self.favoriteStackView.addArrangedSubview(emptyLabel)
+            /// 더보기 버튼 비활성화
+            self.favoriteMoreButton.isEnabled = false
+        } else {
+            /// 더보기 버튼 활성화
+            self.favoriteMoreButton.isEnabled = true
+            /// 예매 내역 추가
+            for item in items {
+                let favoriteView = FavoriteView()
+                favoriteView.configure(with: item)
+                favoriteView.trashButtonTapped = { [weak self] movieTitle in
+                    self?.favoriteTrashButtonTapped?(movieTitle)
+                }
+                self.favoriteStackView.addArrangedSubview(favoriteView)
             }
         }
     }
