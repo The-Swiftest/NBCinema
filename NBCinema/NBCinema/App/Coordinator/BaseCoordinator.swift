@@ -55,4 +55,10 @@ class BaseCoordinator: Coordinator {
                 self?.navigationController.present(alert, animated: true)
             }
         }
+
+    func showAnyAlert(_ alert: UIAlertController) {
+        DispatchQueue.main.async { [weak self] in
+            self?.navigationController.present(alert, animated: true)
+        }
+    }
 }

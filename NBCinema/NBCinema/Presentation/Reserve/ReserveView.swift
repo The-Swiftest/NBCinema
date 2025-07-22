@@ -18,7 +18,7 @@ final class ReserveView: UIView {
 
     // MARK: - UI Components
 
-    private let headerView = HeaderView(.sub("예매하기"))
+    let headerView = HeaderView(.sub("예매하기"))
 
     private let scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
@@ -491,5 +491,20 @@ final class ReserveView: UIView {
         )
 
         delegate?.reserveButtonTapped(inform: inform)
+    }
+
+    func getMovieInfoString() -> String {
+        let calendar = Calendar.current
+        let day = calendar.startOfDay(for: selectedDate ?? Date())
+        let reservationTime = calendar
+            .date(byAdding: selectedTime ?? DateComponents(), to: day) ?? Date()
+        var result = ""
+
+        result += "영화 제목 : \(movieTitleLabel.text ?? "")\n"
+        result += "예매 일시 : \(reservationTime.toMonthDayString())\n"
+        result += "인원 : 청소년 \(youthCount)인, 성인 \(adultCount)인\n"
+        result += "가격 : \(amount.toCommaString()) 원"
+
+        return result
     }
 }

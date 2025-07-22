@@ -39,6 +39,7 @@ class MovieDetailCoordinator: BaseCoordinator {
     
     func showReservation(movieId: Int) {
         let reserveVC = ReserveViewController(id: movieId)
+        reserveVC.coordinator = self
         navigationController.pushViewController(reserveVC, animated: true)
     }
     

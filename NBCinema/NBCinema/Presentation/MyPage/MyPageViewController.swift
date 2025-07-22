@@ -29,7 +29,16 @@ class MyPageViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        myPageView.logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
+        myPageView.logoutButton.addTarget(self,
+                                          action: #selector(logoutTapped),
+                                          for: .touchUpInside
+        )
+        
+        myPageView.reservationsMoreButton.addTarget(
+            self,
+            action: #selector(reservationMoreTapped),
+            for: .touchUpInside
+        )
         myPageView.favoriteMoreButton.addTarget(self, action: #selector(favoriteMoreTapped), for: .touchUpInside)
         myPageView.favoriteTrashButtonTapped = { [weak self] movieTitle in
             self?.myPageViewModel.action(.deleteFavorite(movieTitle: movieTitle))
