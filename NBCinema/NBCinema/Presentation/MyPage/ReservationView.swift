@@ -81,6 +81,10 @@ class ReservationView: UIView {
             informStackView.addArrangedSubview($0)
         }
 
+        self.snp.makeConstraints {
+            $0.height.equalTo(130)
+        }
+
         posterImageView.snp.makeConstraints {
             $0.top.leading.equalToSuperview()
             $0.height.equalTo(130)
@@ -97,7 +101,6 @@ class ReservationView: UIView {
             $0.top.equalTo(movieTitleLabel.snp.bottom).offset(12)
             $0.leading.equalTo(movieTitleLabel)
             $0.trailing.equalToSuperview().inset(20)
-            $0.bottom.equalToSuperview().inset(12)
         }
     }
 }
