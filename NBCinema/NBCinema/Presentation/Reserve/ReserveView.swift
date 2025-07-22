@@ -503,7 +503,7 @@ final class ReserveView: UIView {
         result += "영화 제목 : \(movieTitleLabel.text ?? "")\n"
         result += "예매 일시 : \(reservationTime.toMonthDayString())\n"
         result += "인원 : 청소년 \(youthCount)인, 성인 \(adultCount)인\n"
-        result += "가격 : \(amount) 원"
+        result += "가격 : \(amount.toCommaString()) 원"
 
         return result
     }
