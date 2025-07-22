@@ -30,11 +30,17 @@ class SearchCoordinator: BaseCoordinator {
     
     /// 검색된 영화 상세 화면으로 이동
     func showMovieDetail(movieId: Int) {
-        // TODO: MovieListViewController 구현 후 연결
-        let movieDetailVC = UIViewController()
-        movieDetailVC.view.backgroundColor = .systemPurple
-        movieDetailVC.title = "영화 상세 (검색에서)"
+        let movieDetailCoordinator = MovieDetailCoordinator(
+            navigationController: navigationController,
+            movieRepository: movieRepository,
+            movieId: movieId,
+            parentCoordinator: self
+        )
         
-        navigationController.pushViewController(movieDetailVC, animated: true)
+        // 자식 coordinator로 추가
+        addChildCoordinator(movieDetailCoordinator)
+        
+        // coordinator 시작
+        movieDetailCoordinator.start()
     }
 }
